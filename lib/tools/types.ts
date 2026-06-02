@@ -1,0 +1,30 @@
+// 工具运行结果：成功带 output，失败带 error（含可选行列定位）
+export interface ToolResult {
+  ok: boolean
+  output: string
+  error?: { message: string; line?: number; column?: number }
+}
+
+export const ok = (output: string): ToolResult => ({ ok: true, output })
+export const err = (message: string, pos?: { line?: number; column?: number }): ToolResult => ({
+  ok: false,
+  output: '',
+  error: { message, ...pos },
+})
+
+// 工具的界面布局类型（Batch 1 只用 io；其余留给后续批次）
+export type ToolLayout = 'io' | 'diff' | 'regex' | 'qrcode'
+
+export type ToolCategory = 'json' | 'convert' | 'codec' | 'timestamp' | 'crypto' | 'text'
+
+// 注册表条目：声明式描述一个工具
+export interface ToolDef {
+  id: string
+  category: ToolCategory
+  // i18n key；Batch 1 暂用中文字面量，第 9 段接入 i18n 后替换
+  name: string
+  keywords: string[]
+  layout: ToolLayout
+  // io 布局的纯函数：输入字符串 + 选项 → 结果
+  run?: (input: string, options?: Record<string, unknown>) => ToolResult
+}
