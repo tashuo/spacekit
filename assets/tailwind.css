@@ -1,1 +1,81 @@
 @import "tailwindcss";
+
+/* 类切换深色模式（App 在 <html> 上加/去 .dark），而非仅跟随系统媒体查询 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* 零网络：不引用远程字体，使用高质量系统字体栈（本地装了首选字体会自动启用） */
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "SFMono-Regular", Menlo,
+    Consolas, monospace;
+}
+
+/* CodeMirror 主题 token —— 随 .dark 切换，由 Editor.tsx 通过 var() 引用 */
+:root {
+  --ck-fg: #1f2937;
+  --ck-gutter: #aab2bd;
+  --ck-active-line: rgba(13, 148, 136, 0.06);
+  --ck-cursor: #0d9488;
+  --ck-selection: rgba(13, 148, 136, 0.16);
+  --ck-string: #047857;
+  --ck-number: #b45309;
+  --ck-key: #0d9488;
+  --ck-punct: #64748b;
+  --ck-keyword: #be123c;
+}
+.dark {
+  --ck-fg: #e2e8f0;
+  --ck-gutter: #475569;
+  --ck-active-line: rgba(45, 212, 191, 0.08);
+  --ck-cursor: #2dd4bf;
+  --ck-selection: rgba(45, 212, 191, 0.20);
+  --ck-string: #6ee7b7;
+  --ck-number: #fcd34d;
+  --ck-key: #5eead4;
+  --ck-punct: #94a3b8;
+  --ck-keyword: #fda4af;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  @apply bg-zinc-50 text-zinc-800 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+}
+
+/* 精细滚动条 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(113, 113, 122, 0.4) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 113, 122, 0.6);
+  background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
