@@ -1,7 +1,8 @@
 export interface RegexMatch {
   match: string
   index: number
-  groups: string[]
+  // 未命中的可选捕获组在运行时为 undefined，需如实表达
+  groups: (string | undefined)[]
 }
 
 export interface RegexResult {
@@ -21,7 +22,7 @@ export function testRegex(pattern: string, flags: string, text: string): RegexRe
   }
   const matches: RegexMatch[] = []
   for (const m of text.matchAll(re)) {
-    matches.push({ match: m[0], index: m.index ?? 0, groups: m.slice(1) as string[] })
+    matches.push({ match: m[0], index: m.index ?? 0, groups: m.slice(1) })
   }
   return { ok: true, matches }
 }

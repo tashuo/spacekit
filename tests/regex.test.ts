@@ -22,4 +22,7 @@ describe('testRegex', () => {
   it('honors the i flag', () => {
     expect(testRegex('abc', 'i', 'ABC').matches.length).toBe(1)
   })
+  it('reports unmatched optional groups as undefined', () => {
+    expect(testRegex('(a)(b)?', '', 'a').matches[0].groups).toEqual(['a', undefined])
+  })
 })

@@ -65,7 +65,7 @@ export function RegexPanel({ tool }: { tool: ToolDef }) {
                     <span className="text-teal-600 dark:text-teal-400">{JSON.stringify(m.match)}</span>
                     <span className="text-zinc-400"> @ {m.index}</span>
                     {m.groups.length > 0 && (
-                      <span className="text-zinc-500"> 组: {m.groups.map((g) => JSON.stringify(g)).join(', ')}</span>
+                      <span className="text-zinc-500"> 组: {m.groups.map((g) => (g === undefined ? '∅' : JSON.stringify(g))).join(', ')}</span>
                     )}
                   </li>
                 ))}
