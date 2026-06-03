@@ -23,6 +23,8 @@ export function Overlay() {
       const sel = window.getSelection()
       const value = sel?.toString().trim() ?? ''
       if (!value || !sel || sel.rangeCount === 0) {
+        // 无选区时，保持已展开的面板（面板靠外部 mousedown 关闭，见下方 effect）；
+        // 仅收起「选区按钮」态。
         setMode((m) => (m === 'panel' ? m : 'hidden'))
         return
       }
@@ -56,7 +58,8 @@ export function Overlay() {
     return () => chrome.runtime.onMessage.removeListener(onMessage)
   }, [])
 
-  // 面板模式下点击外部关闭
+  // 面板模式下点击外部关闭。在页面别处重新划词时，mousedown 先收起面板，
+  // 紧接着的 mouseup 会检测到新选区并切到「选区按钮」态——重新划词即重置。
   useEffect(() => {
     if (mode !== 'panel') return
     function onDown(e: MouseEvent) {

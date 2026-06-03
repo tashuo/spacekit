@@ -43,8 +43,9 @@ export default defineBackground(() => {
     }
   })
 
-  // 浮层请求打开标签页
-  chrome.runtime.onMessage.addListener((msg: BgMessage) => {
-    if (msg?.type === 'open-app') chrome.tabs.create({ url: appUrl() })
+  // 浮层请求打开标签页。onMessage 是全局的，会收到任意来源的消息，
+  // 故入参按 unknown 处理，再真实收窄到 BgMessage。
+  chrome.runtime.onMessage.addListener((msg: unknown) => {
+    if ((msg as BgMessage | undefined)?.type === 'open-app') chrome.tabs.create({ url: appUrl() })
   })
 })
