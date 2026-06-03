@@ -1,9 +1,22 @@
 import { useEffect } from 'react'
 import { Sidebar } from '@/components/Sidebar'
 import { ToolPanel } from '@/components/ToolPanel'
+import { DiffPanel } from '@/components/DiffPanel'
+import { RegexPanel } from '@/components/RegexPanel'
 import { findTool } from '@/lib/tools/registry'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
 import { BracesIcon, MonitorIcon, MoonIcon, SunIcon } from '@/components/icons'
+
+function ToolView({ tool }: { tool: import('@/lib/tools/types').ToolDef }) {
+  switch (tool.layout) {
+    case 'diff':
+      return <DiffPanel tool={tool} />
+    case 'regex':
+      return <RegexPanel tool={tool} />
+    default:
+      return <ToolPanel tool={tool} />
+  }
+}
 
 function applyTheme(theme: Theme) {
   const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
@@ -69,7 +82,7 @@ export function App() {
       </header>
       <div className="flex min-h-0 flex-1">
         <Sidebar activeId={tool.id} onSelect={setLastTool} />
-        <ToolPanel tool={tool} />
+        <ToolView tool={tool} />
       </div>
     </div>
   )

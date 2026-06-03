@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Editor } from './Editor'
-import { CAT_LABEL } from '@/lib/tools/categories'
 import { AlertIcon, CheckIcon, CopyIcon, TrashIcon } from '@/components/icons'
+import { PanelHeader } from './PanelHeader'
 import type { ToolDef } from '@/lib/tools/types'
 
 function PaneHeader({ label, children }: { label: string; children?: React.ReactNode }) {
@@ -38,12 +38,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
   return (
     <section className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       {/* 工具头 */}
-      <div className="flex h-12 shrink-0 items-center gap-2.5 border-b border-zinc-200 px-4 dark:border-zinc-800">
-        <h2 className="font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">{tool.name}</h2>
-        <span className="rounded-full bg-zinc-100 px-2 py-0.5 font-mono text-[11px] text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-          {CAT_LABEL[tool.category]}
-        </span>
-        <div className="flex-1" />
+      <PanelHeader tool={tool}>
         <button
           type="button"
           onClick={() => setInput('')}
@@ -53,7 +48,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
           <TrashIcon className="h-3.5 w-3.5" />
           清空
         </button>
-      </div>
+      </PanelHeader>
 
       {/* 双栏 */}
       <div className="grid min-h-0 flex-1 grid-cols-2">
