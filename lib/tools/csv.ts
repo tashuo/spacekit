@@ -2,7 +2,7 @@ import { ok, err, type ToolResult } from './types'
 
 function escapeCell(v: unknown): string {
   const s = v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v)
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
 }
 
 export function jsonToCsv(input: string): ToolResult {

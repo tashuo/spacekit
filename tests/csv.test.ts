@@ -18,4 +18,9 @@ describe('jsonToCsv', () => {
   it('errors when an element is not an object', () => {
     expect(jsonToCsv('[1,2]').ok).toBe(false)
   })
+  it('quotes values containing a carriage return', () => {
+    // JSON 源里的 \r 转义解析出真实 CR；CSV 应加引号
+    const out = jsonToCsv('[{"a":"x\\ry"}]').output
+    expect(out).toBe('a\n"x\ry"')
+  })
 })

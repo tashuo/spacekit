@@ -41,3 +41,22 @@ describe('jsonToJava', () => {
     expect(out).toContain('Addr addr;')
   })
 })
+
+describe('codegen edge cases', () => {
+  it('disambiguates same-named nested objects with different shapes', () => {
+    const out = jsonToTs('{"a":{"config":{"x":1}},"b":{"config":{"y":"s"}}}').output
+    expect(out).toContain('interface Config {')
+    expect(out).toContain('interface Config2 {')
+  })
+  it('quotes invalid TS identifier keys', () => {
+    expect(jsonToTs('{"first-name":"x"}').output).toContain('"first-name": string')
+  })
+  it('sanitizes invalid Java identifier keys', () => {
+    expect(jsonToJava('{"first-name":"x"}').output).toContain('String first_name;')
+  })
+  it('dedups Go field names from collision-prone keys', () => {
+    const out = jsonToGo('{"a b":1,"a-b":2}').output
+    expect(out).toContain('AB int `json:"a b"`')
+    expect(out).toContain('AB2 int `json:"a-b"`')
+  })
+})
