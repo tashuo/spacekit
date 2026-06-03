@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { testRegex } from '@/lib/tools/regex'
-import { PanelHeader } from './PanelHeader'
 import type { ToolDef } from '@/lib/tools/types'
 
 const FLAGS: { flag: string; label: string }[] = [
@@ -22,8 +21,7 @@ export function RegexPanel({ tool }: { tool: ToolDef }) {
   }
 
   return (
-    <section className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
-      <PanelHeader tool={tool} />
+    <section aria-label={tool.name} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-4">
         <div className="flex items-center gap-2">
           <span className="font-mono text-zinc-400">/</span>

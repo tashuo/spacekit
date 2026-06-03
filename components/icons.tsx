@@ -47,3 +47,27 @@ export const AlertIcon = (p: IconProps) => (
 export const BracesIcon = (p: IconProps) => (
   <Svg {...p}><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1" /></Svg>
 )
+export const StarIcon = (p: IconProps) => (
+  <Svg {...p}><path d="m12 2 2.9 6.3 6.8.7-5 4.6 1.4 6.7L12 17.8 5.9 20.3l1.4-6.7-5-4.6 6.8-.7L12 2Z" /></Svg>
+)
+// 实心收藏：用 fill=currentColor，覆盖描边 Svg 的 fill=none
+export const StarFilledIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className ?? 'w-4 h-4'} aria-hidden="true">
+    <path d="m12 2 2.9 6.3 6.8.7-5 4.6 1.4 6.7L12 17.8 5.9 20.3l1.4-6.7-5-4.6 6.8-.7L12 2Z" />
+  </svg>
+)
+export const ClockIcon = (p: IconProps) => (
+  <Svg {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></Svg>
+)
+export const LayersIcon = (p: IconProps) => (
+  <Svg {...p}><path d="m12 2 9 5-9 5-9-5 9-5Z" /><path d="m3 12 9 5 9-5M3 17l9 5 9-5" /></Svg>
+)
+export const ArrowLeftIcon = (p: IconProps) => (
+  <Svg {...p}><path d="M19 12H5M12 19l-7-7 7-7" /></Svg>
+)
+export const CommandIcon = (p: IconProps) => (
+  <Svg {...p}><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3Z" /></Svg>
+)
+export const ReturnIcon = (p: IconProps) => (
+  <Svg {...p}><path d="M9 10 4 15l5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></Svg>
+)

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Editor } from './Editor'
 import { AlertIcon, CheckIcon, CopyIcon, TrashIcon } from '@/components/icons'
-import { PanelHeader } from './PanelHeader'
 import type { ToolDef } from '@/lib/tools/types'
 
 function PaneHeader({ label, children }: { label: string; children?: React.ReactNode }) {
@@ -36,24 +35,21 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
   }
 
   return (
-    <section className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
-      {/* 工具头 */}
-      <PanelHeader tool={tool}>
-        <button
-          type="button"
-          onClick={() => setInput('')}
-          disabled={!hasInput}
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        >
-          <TrashIcon className="h-3.5 w-3.5" />
-          清空
-        </button>
-      </PanelHeader>
-
+    <section aria-label={tool.name} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       {/* 双栏 */}
       <div className="grid min-h-0 flex-1 grid-cols-2">
         <div className="flex min-w-0 flex-col border-r border-zinc-200 dark:border-zinc-800">
-          <PaneHeader label="输入" />
+          <PaneHeader label="输入">
+            <button
+              type="button"
+              onClick={() => setInput('')}
+              disabled={!hasInput}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-zinc-500 transition-colors hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-zinc-400 dark:hover:text-rose-400"
+            >
+              <TrashIcon className="h-3.5 w-3.5" />
+              清空
+            </button>
+          </PaneHeader>
           <div className="min-h-0 flex-1">
             <Editor value={input} onChange={setInput} language={lang} />
           </div>
@@ -81,7 +77,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
       </div>
 
       {/* 状态栏 */}
-      <div className="flex h-9 shrink-0 items-center border-t border-zinc-200 px-4 text-xs dark:border-zinc-800">
+      <div aria-live="polite" className="flex h-9 shrink-0 items-center border-t border-zinc-200 px-4 text-xs dark:border-zinc-800">
         {!hasInput ? (
           <span className="text-zinc-400">输入内容后自动转换</span>
         ) : result.ok ? (

@@ -2,32 +2,71 @@ import { create } from 'zustand'
 
 export type Theme = 'system' | 'light' | 'dark'
 
+const RECENT_MAX = 6
+
 interface PrefsState {
-  lastToolId: string
   theme: Theme
   tz: string // 'UTC' | 'local'
-  setLastTool: (id: string) => void
+  recentToolIds: string[]
+  favoriteToolIds: string[]
   setTheme: (t: Theme) => void
   setTz: (tz: string) => void
+  pushRecent: (id: string) => void
+  toggleFavorite: (id: string) => void
   hydrate: () => Promise<void>
 }
 
 const KEY = 'spacekit:prefs'
 
-async function persist(p: { lastToolId: string; theme: Theme; tz: string }) {
-  await chrome.storage?.local.set({ [KEY]: { lastToolId: p.lastToolId, theme: p.theme, tz: p.tz } })
+type Persisted = Pick<PrefsState, 'theme' | 'tz' | 'recentToolIds' | 'favoriteToolIds'>
+
+async function persist(p: Persisted) {
+  await chrome.storage?.local.set({
+    [KEY]: {
+      theme: p.theme,
+      tz: p.tz,
+      recentToolIds: p.recentToolIds,
+      favoriteToolIds: p.favoriteToolIds,
+    },
+  })
 }
 
 export const usePrefs = create<PrefsState>((set, get) => ({
-  lastToolId: 'json-format',
-  theme: 'system',
+  // Dark-first：默认深色（用户仍可切到浅色/跟随系统）
+  theme: 'dark',
   tz: 'UTC',
-  setLastTool: (id) => { set({ lastToolId: id }); void persist({ ...get(), lastToolId: id }) },
-  setTheme: (t) => { set({ theme: t }); void persist({ ...get(), theme: t }) },
-  setTz: (tz) => { set({ tz }); void persist({ ...get(), tz }) },
+  recentToolIds: [],
+  favoriteToolIds: [],
+  setTheme: (t) => {
+    set({ theme: t })
+    void persist({ ...get(), theme: t })
+  },
+  setTz: (tz) => {
+    set({ tz })
+    void persist({ ...get(), tz })
+  },
+  // 最近使用：移到队首、去重、截断
+  pushRecent: (id) => {
+    const recentToolIds = [id, ...get().recentToolIds.filter((x) => x !== id)].slice(0, RECENT_MAX)
+    set({ recentToolIds })
+    void persist({ ...get(), recentToolIds })
+  },
+  toggleFavorite: (id) => {
+    const cur = get().favoriteToolIds
+    const favoriteToolIds = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]
+    set({ favoriteToolIds })
+    void persist({ ...get(), favoriteToolIds })
+  },
   hydrate: async () => {
     const stored = await chrome.storage?.local.get(KEY)
-    const p = stored?.[KEY] as { lastToolId: string; theme: Theme; tz: string } | undefined
-    if (p) set({ lastToolId: p.lastToolId, theme: p.theme, tz: p.tz })
+    const p = stored?.[KEY] as Partial<Persisted> | undefined
+    if (p) {
+      set({
+        theme: p.theme ?? 'dark',
+        tz: p.tz ?? 'UTC',
+        recentToolIds: p.recentToolIds ?? [],
+        favoriteToolIds: p.favoriteToolIds ?? [],
+      })
+    }
   },
 }))
