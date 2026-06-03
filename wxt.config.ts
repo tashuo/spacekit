@@ -8,7 +8,18 @@ export default defineConfig({
     name: 'SpaceKit',
     description: 'Local-first developer toolbox. Zero network, no data collection.',
     version: '0.1.0',
-    permissions: ['storage'],
+    permissions: ['storage', 'contextMenus'],
+    host_permissions: ['<all_urls>'],
     action: { default_title: 'SpaceKit' },
+    commands: {
+      'open-app': {
+        suggested_key: { default: 'Alt+Shift+S' },
+        description: '打开 SpaceKit 标签页',
+      },
+      'toggle-overlay': {
+        suggested_key: { default: 'Alt+Shift+K' },
+        description: '对选中文本唤出 SpaceKit 浮层',
+      },
+    },
   },
 })

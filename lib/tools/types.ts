@@ -25,6 +25,8 @@ export interface ToolDef {
   name: string
   keywords: string[]
   layout: ToolLayout
+  // 是否在划词浮层中暴露（仅 io 布局、单输入→输出的高频工具）
+  inOverlay?: boolean
   // io 布局的纯函数：输入字符串 + 选项 → 结果
   run?: (input: string, options?: Record<string, unknown>) => ToolResult
 }

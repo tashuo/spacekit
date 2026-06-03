@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TOOLS, findTool, searchTools } from '@/lib/tools/registry'
+import { TOOLS, findTool, searchTools, overlayTools } from '@/lib/tools/registry'
 
 describe('registry', () => {
   it('every tool has a unique id', () => {
@@ -29,5 +29,18 @@ describe('registry', () => {
   it('search finds batch-2 tools', () => {
     expect(searchTools('yaml').some((t) => t.id === 'json-to-yaml')).toBe(true)
     expect(searchTools('正则').some((t) => t.id === 'regex-test')).toBe(true)
+  })
+  it('overlayTools returns only tools flagged inOverlay, all runnable io tools', () => {
+    const list = overlayTools()
+    expect(list.length).toBeGreaterThan(0)
+    expect(list.every((t) => t.inOverlay === true)).toBe(true)
+    expect(list.every((t) => t.layout === 'io' && typeof t.run === 'function')).toBe(true)
+  })
+  it('overlay set covers the high-frequency decode/parse tools', () => {
+    const ids = overlayTools().map((t) => t.id)
+    expect(ids).toContain('json-format')
+    expect(ids).toContain('base64-decode')
+    expect(ids).toContain('jwt-decode')
+    expect(ids).toContain('ts-to-date')
   })
 })
