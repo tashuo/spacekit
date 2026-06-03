@@ -13,7 +13,7 @@ export const err = (message: string, pos?: { line?: number; column?: number }): 
 })
 
 // 工具的界面布局类型（Batch 1 只用 io；其余留给后续批次）
-export type ToolLayout = 'io' | 'diff' | 'regex' | 'qrcode'
+export type ToolLayout = 'io' | 'diff' | 'regex' | 'qrcode' | 'query'
 
 export type ToolCategory = 'json' | 'convert' | 'codec' | 'timestamp' | 'crypto' | 'text'
 

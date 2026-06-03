@@ -6,6 +6,9 @@ import { tsToDate, dateToTs } from './timestamp'
 import { md5 } from './hash'
 import { jsonToYaml, yamlToJson } from './convert'
 import { dedupLines, sortLines, toUpper, toLower } from './text'
+import { jsonToCsv } from './csv'
+import { jsonToXml, xmlToJson } from './xml'
+import { jsonToTs, jsonToGo, jsonToJava } from './codegen'
 
 export const TOOLS: ToolDef[] = [
   { id: 'json-format', category: 'json', name: 'JSON 格式化', keywords: ['json', 'format', '格式化', '美化'], layout: 'io', inOverlay: true, run: (i, o) => formatJson(i, o) },
@@ -30,6 +33,13 @@ export const TOOLS: ToolDef[] = [
   { id: 'text-sort', category: 'text', name: '文本排序', keywords: ['sort', '排序', '行'], layout: 'io', run: (i) => sortLines(i) },
   { id: 'text-upper', category: 'text', name: '转大写', keywords: ['upper', '大写', '大小写'], layout: 'io', run: (i) => toUpper(i) },
   { id: 'text-lower', category: 'text', name: '转小写', keywords: ['lower', '小写', '大小写'], layout: 'io', run: (i) => toLower(i) },
+  { id: 'jsonpath-query', category: 'json', name: 'JSONPath 查询', keywords: ['jsonpath', 'query', '查询', '路径'], layout: 'query' },
+  { id: 'json-to-xml', category: 'convert', name: 'JSON 转 XML', keywords: ['xml', 'json', '转换'], layout: 'io', run: (i) => jsonToXml(i) },
+  { id: 'xml-to-json', category: 'convert', name: 'XML 转 JSON', keywords: ['xml', 'json', '转换'], layout: 'io', run: (i) => xmlToJson(i) },
+  { id: 'json-to-csv', category: 'convert', name: 'JSON 转 CSV', keywords: ['csv', 'json', '转换', '表格'], layout: 'io', run: (i) => jsonToCsv(i) },
+  { id: 'json-to-ts', category: 'convert', name: 'JSON 转 TS 接口', keywords: ['typescript', 'ts', 'interface', '实体类'], layout: 'io', run: (i) => jsonToTs(i) },
+  { id: 'json-to-go', category: 'convert', name: 'JSON 转 Go 结构体', keywords: ['go', 'golang', 'struct', '实体类'], layout: 'io', run: (i) => jsonToGo(i) },
+  { id: 'json-to-java', category: 'convert', name: 'JSON 转 Java 类', keywords: ['java', 'class', '实体类'], layout: 'io', run: (i) => jsonToJava(i) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

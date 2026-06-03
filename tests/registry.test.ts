@@ -43,4 +43,16 @@ describe('registry', () => {
     expect(ids).toContain('jwt-decode')
     expect(ids).toContain('ts-to-date')
   })
+  it('registers batch-3a io tools that run', () => {
+    expect(findTool('json-to-csv')!.run!('[{"a":1}]').output).toBe('a\n1')
+    expect(findTool('json-to-ts')!.run!('{"a":1}').output).toContain('interface Root')
+  })
+  it('registers jsonpath-query with query layout and no run', () => {
+    expect(findTool('jsonpath-query')!.layout).toBe('query')
+    expect(findTool('jsonpath-query')!.run).toBeUndefined()
+  })
+  it('search finds batch-3a tools', () => {
+    expect(searchTools('xml').some((t) => t.id === 'json-to-xml')).toBe(true)
+    expect(searchTools('jsonpath').some((t) => t.id === 'jsonpath-query')).toBe(true)
+  })
 })
