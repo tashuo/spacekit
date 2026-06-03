@@ -3,6 +3,7 @@ import { CommandPalette } from '@/components/CommandPalette'
 import { ToolPanel } from '@/components/ToolPanel'
 import { DiffPanel } from '@/components/DiffPanel'
 import { RegexPanel } from '@/components/RegexPanel'
+import { QueryPanel } from '@/components/QueryPanel'
 import { findTool } from '@/lib/tools/registry'
 import { CAT_LABEL } from '@/lib/tools/categories'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
@@ -24,6 +25,8 @@ function ToolView({ tool }: { tool: ToolDef }) {
       return <DiffPanel tool={tool} />
     case 'regex':
       return <RegexPanel tool={tool} />
+    case 'query':
+      return <QueryPanel tool={tool} />
     default:
       return <ToolPanel tool={tool} />
   }
