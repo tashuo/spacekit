@@ -4,6 +4,8 @@ import { encodeBase64, decodeBase64, encodeUrl, decodeUrl, encodeUnicode, decode
 import { decodeJwt } from './jwt'
 import { tsToDate, dateToTs } from './timestamp'
 import { md5 } from './hash'
+import { jsonToYaml, yamlToJson } from './convert'
+import { dedupLines, sortLines, toUpper, toLower } from './text'
 
 export const TOOLS: ToolDef[] = [
   { id: 'json-format', category: 'json', name: 'JSON 格式化', keywords: ['json', 'format', '格式化', '美化'], layout: 'io', run: (i, o) => formatJson(i, o) },
@@ -20,6 +22,14 @@ export const TOOLS: ToolDef[] = [
   { id: 'ts-to-date', category: 'timestamp', name: '时间戳转日期', keywords: ['timestamp', '时间戳', '日期'], layout: 'io', run: (i, o) => tsToDate(i, { unit: 'auto', tz: (o?.tz as string) ?? 'UTC' }) },
   { id: 'date-to-ts', category: 'timestamp', name: '日期转时间戳', keywords: ['timestamp', '时间戳', '日期'], layout: 'io', run: (i, o) => dateToTs(i, { tz: (o?.tz as string) ?? 'UTC' }) },
   { id: 'md5', category: 'crypto', name: 'MD5', keywords: ['md5', 'hash', '哈希'], layout: 'io', run: (i) => md5(i) },
+  { id: 'json-to-yaml', category: 'convert', name: 'JSON 转 YAML', keywords: ['json', 'yaml', '转换'], layout: 'io', run: (i) => jsonToYaml(i) },
+  { id: 'yaml-to-json', category: 'convert', name: 'YAML 转 JSON', keywords: ['yaml', 'json', '转换'], layout: 'io', run: (i) => yamlToJson(i) },
+  { id: 'json-diff', category: 'json', name: 'JSON 对比', keywords: ['diff', '对比', '比较'], layout: 'diff' },
+  { id: 'regex-test', category: 'text', name: '正则测试', keywords: ['regex', '正则', '匹配'], layout: 'regex' },
+  { id: 'text-dedup', category: 'text', name: '文本去重', keywords: ['dedup', '去重', '行'], layout: 'io', run: (i) => dedupLines(i) },
+  { id: 'text-sort', category: 'text', name: '文本排序', keywords: ['sort', '排序', '行'], layout: 'io', run: (i) => sortLines(i) },
+  { id: 'text-upper', category: 'text', name: '转大写', keywords: ['upper', '大写', '大小写'], layout: 'io', run: (i) => toUpper(i) },
+  { id: 'text-lower', category: 'text', name: '转小写', keywords: ['lower', '小写', '大小写'], layout: 'io', run: (i) => toLower(i) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

@@ -16,4 +16,18 @@ describe('registry', () => {
   it('io tools run end-to-end', () => {
     expect(findTool('json-format')!.run!('{"a":1}').output).toBe('{\n  "a": 1\n}')
   })
+  it('registers batch-2 io tools that run', () => {
+    expect(findTool('json-to-yaml')!.run!('{"a":1}').output).toBe('a: 1\n')
+    expect(findTool('text-dedup')!.run!('a\na\nb').output).toBe('a\nb')
+  })
+  it('registers diff/regex tools with the right layout and no run', () => {
+    expect(findTool('json-diff')!.layout).toBe('diff')
+    expect(findTool('json-diff')!.run).toBeUndefined()
+    expect(findTool('regex-test')!.layout).toBe('regex')
+    expect(findTool('regex-test')!.run).toBeUndefined()
+  })
+  it('search finds batch-2 tools', () => {
+    expect(searchTools('yaml').some((t) => t.id === 'json-to-yaml')).toBe(true)
+    expect(searchTools('正则').some((t) => t.id === 'regex-test')).toBe(true)
+  })
 })
