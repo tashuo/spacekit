@@ -147,6 +147,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'history.title': { zh: '历史记录', en: 'History' },
   'history.empty': { zh: '暂无历史', en: 'No history yet' },
   'history.clear': { zh: '清空', en: 'Clear' },
+  'history.clearTool': { zh: '清除该工具的记录', en: 'Clear this tool' },
   'history.record': { zh: '记录历史', en: 'Record history' },
   'history.byTool': { zh: '按工具', en: 'By tool' },
   'history.byTime': { zh: '按时间', en: 'By time' },

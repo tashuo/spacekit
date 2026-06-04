@@ -18,6 +18,7 @@ interface HistoryState {
   entries: HistoryEntry[]
   add: (e: { kind: HistoryEntry['kind']; toolId: string; value: string; input?: string }) => void
   remove: (id: string) => void
+  removeByTool: (toolId: string) => void
   clear: () => void
   setEnabled: (b: boolean) => void
   hydrate: () => Promise<void>
@@ -39,6 +40,11 @@ export const useHistory = create<HistoryState>((set, get) => ({
   },
   remove: (id) => {
     const entries = get().entries.filter((e) => e.id !== id)
+    set({ entries })
+    void persist({ ...get(), entries })
+  },
+  removeByTool: (toolId) => {
+    const entries = get().entries.filter((e) => e.toolId !== toolId)
     set({ entries })
     void persist({ ...get(), entries })
   },

@@ -9,6 +9,7 @@ export function HistoryPanel({ onClose }: { onClose: () => void }) {
   const enabled = useHistory((s) => s.enabled)
   const setEnabled = useHistory((s) => s.setEnabled)
   const remove = useHistory((s) => s.remove)
+  const removeByTool = useHistory((s) => s.removeByTool)
   const clear = useHistory((s) => s.clear)
   const [groupBy, setGroupBy] = useState<'tool' | 'time'>('tool')
 
@@ -101,10 +102,20 @@ export function HistoryPanel({ onClose }: { onClose: () => void }) {
             entries.map(renderRow)
           ) : (
             groups.map(([toolId, items]) => (
-              <div key={toolId} className="mb-1">
+              <div key={toolId} className="group/tool mb-1">
                 <div className="flex items-center gap-2 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                   {t(`tool.${toolId}`)}
                   <span className="rounded-full bg-zinc-100 px-1.5 font-mono text-[10px] normal-case text-zinc-400 dark:bg-zinc-800">{items.length}</span>
+                  <div className="flex-1" />
+                  <button
+                    type="button"
+                    onClick={() => removeByTool(toolId)}
+                    aria-label={t('history.clearTool')}
+                    title={t('history.clearTool')}
+                    className="shrink-0 cursor-pointer rounded p-1 text-zinc-400 opacity-0 transition-colors hover:text-rose-500 focus-visible:opacity-100 group-hover/tool:opacity-100"
+                  >
+                    <TrashIcon className="h-3.5 w-3.5" />
+                  </button>
                 </div>
                 {items.map(renderRow)}
               </div>
