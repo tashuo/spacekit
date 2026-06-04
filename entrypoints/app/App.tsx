@@ -6,6 +6,7 @@ import { RegexPanel } from '@/components/RegexPanel'
 import { QueryPanel } from '@/components/QueryPanel'
 import { CryptoPanel } from '@/components/CryptoPanel'
 import { QrPanel } from '@/components/QrPanel'
+import { PasswordPanel } from '@/components/PasswordPanel'
 import { findTool } from '@/lib/tools/registry'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
 import { useT } from '@/lib/i18n'
@@ -35,6 +36,8 @@ function ToolView({ tool }: { tool: ToolDef }) {
       return <CryptoPanel tool={tool} />
     case 'qrcode':
       return <QrPanel tool={tool} />
+    case 'password':
+      return <PasswordPanel tool={tool} />
     default:
       return <ToolPanel tool={tool} />
   }
