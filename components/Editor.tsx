@@ -14,6 +14,8 @@ const LANG_LOADERS: Record<EditorLang, (() => Promise<Extension>) | null> = {
   css: () => import('@codemirror/lang-css').then((m) => m.css()),
   html: () => import('@codemirror/lang-html').then((m) => m.html()),
   javascript: () => import('@codemirror/lang-javascript').then((m) => m.javascript()),
+  xml: () => import('@codemirror/lang-xml').then((m) => m.xml()),
+  yaml: () => import('@codemirror/lang-yaml').then((m) => m.yaml()),
 }
 
 // 主题用 CSS 变量取色（定义在 tailwind.css 的 :root / .dark），

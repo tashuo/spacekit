@@ -192,4 +192,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.css-minify': { zh: 'CSS 压缩', en: 'CSS Minify' },
   'tool.html-format': { zh: 'HTML 格式化', en: 'HTML Format' },
   'tool.js-format': { zh: 'JS 格式化', en: 'JS Format' },
+  'tool.xml-format': { zh: 'XML 格式化', en: 'XML Format' },
+  'tool.xml-minify': { zh: 'XML 压缩', en: 'XML Minify' },
+  'tool.yaml-format': { zh: 'YAML 格式化', en: 'YAML Format' },
 }

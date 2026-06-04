@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs } from '@/lib/tools/format'
+import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml } from '@/lib/tools/format'
 
 describe('formatSql', () => {
   it('uppercases keywords and indents', () => {
@@ -79,5 +79,50 @@ describe('formatJs', () => {
   })
   it('errors on empty input', () => {
     expect(formatJs('').ok).toBe(false)
+  })
+})
+
+describe('formatXml', () => {
+  it('indents nested elements and preserves comments', () => {
+    const r = formatXml('<a><!-- c --><b>x</b></a>')
+    expect(r.ok).toBe(true)
+    expect(r.output).toContain('\n')
+    expect(r.output).toContain('<!-- c -->')
+    expect(r.output).toContain('<b>x</b>')
+  })
+  it('uses LF (no CR)', () => {
+    expect(formatXml('<a><b>x</b></a>').output).not.toContain('\r')
+  })
+  it('errors on mismatched tags (strict)', () => {
+    expect(formatXml('<a><b></a>').ok).toBe(false)
+  })
+  it('errors on empty input', () => {
+    expect(formatXml('  ').ok).toBe(false)
+  })
+})
+
+describe('minifyXml', () => {
+  it('collapses inter-tag whitespace', () => {
+    expect(minifyXml('<a>\n  <b>x</b>\n</a>').output).toBe('<a><b>x</b></a>')
+  })
+  it('errors on empty input', () => {
+    expect(minifyXml('').ok).toBe(false)
+  })
+})
+
+describe('formatYaml', () => {
+  it('reindents to 2 spaces', () => {
+    const r = formatYaml('a:\n    b: 1')
+    expect(r.ok).toBe(true)
+    expect(r.output).toBe('a:\n  b: 1\n')
+  })
+  it('preserves comments', () => {
+    expect(formatYaml('# top\na: 1').output).toContain('# top')
+  })
+  it('errors on invalid yaml', () => {
+    expect(formatYaml('a:\n  - x\n - y').ok).toBe(false)
+  })
+  it('errors on empty input', () => {
+    expect(formatYaml('   ').ok).toBe(false)
   })
 })

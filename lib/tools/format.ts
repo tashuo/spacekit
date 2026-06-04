@@ -2,6 +2,8 @@ import { ok, err, type ToolResult } from './types'
 import { format as sqlFormat } from 'sql-formatter'
 import beautify from 'js-beautify'
 import { minify as cssoMinify } from 'csso'
+import xmlFormat from 'xml-formatter'
+import { parseDocument } from 'yaml'
 
 // SQL 格式化：缩进 2 空格、关键字大写。dialect 取通用 'sql'。
 export function formatSql(input: string): ToolResult {
@@ -115,5 +117,36 @@ export function formatJs(input: string): ToolResult {
     return ok(beautify.js(input, { indent_size: 2 }))
   } catch (e) {
     return err(e instanceof Error ? e.message : 'JS 格式化失败')
+  }
+}
+
+// XML 格式化：字符串级重排（保留注释/CDATA，不经 JSON 往返）。strictMode 校验标签闭合。
+export function formatXml(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    return ok(xmlFormat(input, { indentation: '  ', lineSeparator: '\n', collapseContent: true, strictMode: true }))
+  } catch (e) {
+    return err(e instanceof Error ? e.message : 'XML 格式化失败')
+  }
+}
+
+export function minifyXml(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    return ok(xmlFormat.minify(input, { strictMode: true }))
+  } catch (e) {
+    return err(e instanceof Error ? e.message : 'XML 压缩失败')
+  }
+}
+
+// YAML 格式化：parseDocument 保留注释并按 2 空格重新缩进；解析错误直接报出。
+export function formatYaml(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    const doc = parseDocument(input)
+    if (doc.errors.length) return err(doc.errors[0].message)
+    return ok(doc.toString({ indent: 2 }))
+  } catch (e) {
+    return err(e instanceof Error ? e.message : 'YAML 格式化失败')
   }
 }

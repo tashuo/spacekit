@@ -56,6 +56,9 @@ export const TOOLS: ToolDef[] = [
   { id: 'css-minify', category: 'format', name: 'CSS 压缩', keywords: ['css', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.minifyCss(i)) },
   { id: 'html-format', category: 'format', name: 'HTML 格式化', keywords: ['html', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'html', run: (i) => import('./format').then((m) => m.formatHtml(i)) },
   { id: 'js-format', category: 'format', name: 'JS 格式化', keywords: ['js', 'javascript', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'javascript', run: (i) => import('./format').then((m) => m.formatJs(i)) },
+  { id: 'xml-format', category: 'format', name: 'XML 格式化', keywords: ['xml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'xml', run: (i) => import('./format').then((m) => m.formatXml(i)) },
+  { id: 'xml-minify', category: 'format', name: 'XML 压缩', keywords: ['xml', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'xml', run: (i) => import('./format').then((m) => m.minifyXml(i)) },
+  { id: 'yaml-format', category: 'format', name: 'YAML 格式化', keywords: ['yaml', 'yml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'yaml', run: (i) => import('./format').then((m) => m.formatYaml(i)) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {
