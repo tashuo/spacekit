@@ -28,7 +28,11 @@
     "wxt": "^0.20.25"
   },
   "dependencies": {
+    "@codemirror/lang-css": "^6.3.1",
+    "@codemirror/lang-html": "^6.4.11",
+    "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-sql": "^6.10.0",
     "@codemirror/language": "^6.10.8",
     "@codemirror/lint": "^6.8.4",
     "@codemirror/merge": "^6.12.1",

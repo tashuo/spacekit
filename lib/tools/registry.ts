@@ -50,12 +50,12 @@ export const TOOLS: ToolDef[] = [
   { id: 'qr-generate', category: 'text', name: '二维码生成', keywords: ['qr', '二维码', 'qrcode', '生成'], layout: 'qrcode' },
   { id: 'qr-decode', category: 'text', name: '二维码解析', keywords: ['qr', '二维码', 'qrcode', '解析', '识别'], layout: 'qrcode' },
   { id: 'password-generator', category: 'crypto', name: '密码生成器', keywords: ['password', '密码', '随机', 'random', 'generate', 'pin'], layout: 'password' },
-  { id: 'sql-format', category: 'format', name: 'SQL 格式化', keywords: ['sql', '格式化', '美化', 'beautify'], layout: 'io', run: (i) => import('./format').then((m) => m.formatSql(i)) },
-  { id: 'sql-minify', category: 'format', name: 'SQL 压缩', keywords: ['sql', '压缩', 'minify', 'compress'], layout: 'io', run: (i) => import('./format').then((m) => m.minifySql(i)) },
-  { id: 'css-format', category: 'format', name: 'CSS 格式化', keywords: ['css', '格式化', '美化', 'beautify'], layout: 'io', run: (i) => import('./format').then((m) => m.formatCss(i)) },
-  { id: 'css-minify', category: 'format', name: 'CSS 压缩', keywords: ['css', '压缩', 'minify', 'compress'], layout: 'io', run: (i) => import('./format').then((m) => m.minifyCss(i)) },
-  { id: 'html-format', category: 'format', name: 'HTML 格式化', keywords: ['html', '格式化', '美化', 'beautify'], layout: 'io', run: (i) => import('./format').then((m) => m.formatHtml(i)) },
-  { id: 'js-format', category: 'format', name: 'JS 格式化', keywords: ['js', 'javascript', '格式化', '美化', 'beautify'], layout: 'io', run: (i) => import('./format').then((m) => m.formatJs(i)) },
+  { id: 'sql-format', category: 'format', name: 'SQL 格式化', keywords: ['sql', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'sql', run: (i) => import('./format').then((m) => m.formatSql(i)) },
+  { id: 'sql-minify', category: 'format', name: 'SQL 压缩', keywords: ['sql', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'sql', run: (i) => import('./format').then((m) => m.minifySql(i)) },
+  { id: 'css-format', category: 'format', name: 'CSS 格式化', keywords: ['css', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.formatCss(i)) },
+  { id: 'css-minify', category: 'format', name: 'CSS 压缩', keywords: ['css', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.minifyCss(i)) },
+  { id: 'html-format', category: 'format', name: 'HTML 格式化', keywords: ['html', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'html', run: (i) => import('./format').then((m) => m.formatHtml(i)) },
+  { id: 'js-format', category: 'format', name: 'JS 格式化', keywords: ['js', 'javascript', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'javascript', run: (i) => import('./format').then((m) => m.formatJs(i)) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

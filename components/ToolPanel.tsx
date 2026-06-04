@@ -47,7 +47,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
     }
   }, [tool, input])
 
-  const lang = tool.category === 'json' ? 'json' : 'text'
+  const lang = tool.editorLang ?? (tool.category === 'json' ? 'json' : 'text')
   const hasInput = input.trim().length > 0
 
   function copy() {
