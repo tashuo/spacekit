@@ -5,6 +5,7 @@ import { DiffPanel } from '@/components/DiffPanel'
 import { RegexPanel } from '@/components/RegexPanel'
 import { QueryPanel } from '@/components/QueryPanel'
 import { CryptoPanel } from '@/components/CryptoPanel'
+import { QrPanel } from '@/components/QrPanel'
 import { findTool } from '@/lib/tools/registry'
 import { CAT_LABEL } from '@/lib/tools/categories'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
@@ -30,6 +31,8 @@ function ToolView({ tool }: { tool: ToolDef }) {
       return <QueryPanel tool={tool} />
     case 'crypto':
       return <CryptoPanel tool={tool} />
+    case 'qrcode':
+      return <QrPanel tool={tool} />
     default:
       return <ToolPanel tool={tool} />
   }
