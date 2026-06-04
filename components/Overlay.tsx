@@ -1,17 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import { overlayTools } from '@/lib/tools/registry'
+import { useT } from '@/lib/i18n'
+import { usePrefs } from '@/lib/store/prefs'
 import type { OverlayMessage } from '@/lib/messaging'
 
 const TOOLS = overlayTools()
 type Mode = 'hidden' | 'button' | 'panel'
 
 export function Overlay() {
+  const t = useT()
   const [mode, setMode] = useState<Mode>('hidden')
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const [text, setText] = useState('')
   const [toolId, setToolId] = useState(TOOLS[0]?.id ?? '')
   const [copied, setCopied] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+
+  // 挂载时同步用户所选语言
+  useEffect(() => {
+    void usePrefs.getState().hydrate()
+  }, [])
 
   const tool = TOOLS.find((t) => t.id === toolId)
   const result = tool?.run ? tool.run(text) : { ok: true, output: '' }
@@ -96,24 +104,24 @@ export function Overlay() {
           <div className="flex items-center gap-2 border-b border-zinc-100 px-3 py-2">
             <span className="text-xs font-semibold text-teal-600">SpaceKit</span>
             <div className="flex-1" />
-            <button type="button" onClick={() => setMode('hidden')} className="text-zinc-400 hover:text-zinc-700" aria-label="关闭">✕</button>
+            <button type="button" onClick={() => setMode('hidden')} className="text-zinc-400 hover:text-zinc-700" aria-label={t('overlay.close')}>✕</button>
           </div>
           <div className="flex flex-wrap gap-1 px-3 py-2">
-            {TOOLS.map((t) => (
+            {TOOLS.map((toolItem) => (
               <button
-                key={t.id}
+                key={toolItem.id}
                 type="button"
-                onClick={() => setToolId(t.id)}
+                onClick={() => setToolId(toolItem.id)}
                 className={`rounded px-2 py-1 text-[11px] font-medium transition-colors ${
-                  t.id === toolId ? 'bg-teal-50 text-teal-700' : 'text-zinc-500 hover:bg-zinc-100'
+                  toolItem.id === toolId ? 'bg-teal-50 text-teal-700' : 'text-zinc-500 hover:bg-zinc-100'
                 }`}
               >
-                {t.name}
+                {t(`tool.${toolItem.id}`)}
               </button>
             ))}
           </div>
           <pre className={`mx-3 max-h-60 overflow-auto rounded border border-zinc-100 bg-zinc-50 p-2 font-mono text-xs whitespace-pre-wrap break-all ${result.ok ? 'text-zinc-800' : 'text-rose-600'}`}>
-            {result.ok ? result.output || '（无输出）' : `✗ ${result.error?.message ?? '处理失败'}`}
+            {result.ok ? result.output || t('overlay.noOutput') : `✗ ${result.error?.message ?? t('overlay.fail')}`}
           </pre>
           <div className="flex items-center gap-2 px-3 py-2">
             <button
@@ -122,7 +130,7 @@ export function Overlay() {
               disabled={!result.ok || !result.output}
               className="rounded border border-zinc-200 px-2 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-40"
             >
-              {copied ? '已复制' : '复制'}
+              {copied ? t('action.copied') : t('action.copy')}
             </button>
             <div className="flex-1" />
             <button
@@ -130,7 +138,7 @@ export function Overlay() {
               onClick={() => chrome.runtime.sendMessage({ type: 'open-app' })}
               className="rounded px-2 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
             >
-              在标签页打开 →
+              {t('overlay.openApp')}
             </button>
           </div>
         </div>

@@ -1,7 +1,31 @@
 import { overlayTools } from '@/lib/tools/registry'
+import { t, resolveLang } from '@/lib/i18n'
+import type { LangPref } from '@/lib/i18n'
 import type { BgMessage } from '@/lib/messaging'
 
 const PARENT_ID = 'spacekit'
+const PREFS_KEY = 'spacekit:prefs'
+
+async function getLang() {
+  const stored = await chrome.storage.local.get(PREFS_KEY)
+  const prefs = stored?.[PREFS_KEY] as { lang?: LangPref } | undefined
+  const pref: LangPref = prefs?.lang ?? 'system'
+  return resolveLang(pref)
+}
+
+async function buildMenus() {
+  const lang = await getLang()
+  await new Promise<void>((resolve) => chrome.contextMenus.removeAll(resolve))
+  chrome.contextMenus.create({ id: PARENT_ID, title: t('ctx.parent', lang), contexts: ['selection'] })
+  for (const tool of overlayTools()) {
+    chrome.contextMenus.create({
+      id: `${PARENT_ID}:${tool.id}`,
+      parentId: PARENT_ID,
+      title: t(`tool.${tool.id}`, lang),
+      contexts: ['selection'],
+    })
+  }
+}
 
 export default defineBackground(() => {
   const appUrl = () => chrome.runtime.getURL('/app.html')
@@ -13,17 +37,14 @@ export default defineBackground(() => {
 
   // 右键菜单：父项 + 每个浮层工具子项（由注册表自动生成）
   chrome.runtime.onInstalled.addListener(() => {
-    chrome.contextMenus.removeAll(() => {
-      chrome.contextMenus.create({ id: PARENT_ID, title: '用 SpaceKit 处理', contexts: ['selection'] })
-      for (const t of overlayTools()) {
-        chrome.contextMenus.create({
-          id: `${PARENT_ID}:${t.id}`,
-          parentId: PARENT_ID,
-          title: t.name,
-          contexts: ['selection'],
-        })
-      }
-    })
+    void buildMenus()
+  })
+
+  // 监听语言偏好变化，重建菜单
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes[PREFS_KEY]) {
+      void buildMenus()
+    }
   })
 
   chrome.contextMenus.onClicked.addListener((info, tab) => {
