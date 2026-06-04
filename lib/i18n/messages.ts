@@ -198,4 +198,6 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.json5-format': { zh: 'JSON5 格式化', en: 'JSON5 Format' },
   'tool.toml-format': { zh: 'TOML 格式化', en: 'TOML Format' },
   'tool.markdown-format': { zh: 'Markdown 格式化', en: 'Markdown Format' },
+  'tool.ini-format': { zh: 'INI 格式化', en: 'INI Format' },
+  'tool.properties-format': { zh: 'Properties 格式化', en: 'Properties Format' },
 }

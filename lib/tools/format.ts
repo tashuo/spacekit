@@ -184,3 +184,88 @@ export function formatMarkdown(input: string): ToolResult {
     return err(e instanceof Error ? e.message : 'Markdown 格式化失败')
   }
 }
+
+// 行尾连续反斜杠为奇数 → properties 续行
+function endsWithContinuation(line: string): boolean {
+  let n = 0
+  for (let i = line.length - 1; i >= 0 && line[i] === '\\'; i--) n++
+  return n % 2 === 1
+}
+
+function trimTrailingBlank(lines: string[]): string[] {
+  while (lines.length && lines[lines.length - 1] === '') lines.pop()
+  return lines
+}
+
+// INI 格式化：行级规范化，保留注释与顺序（不经 parse 往返，零丢失）。
+// 规则：段标题 [name] 前留空行(首段除外)、键值统一为 key = value、注释(; #)原样、折叠连续空行。
+export function formatIni(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const out: string[] = []
+  let prevBlank = false
+  for (const raw of input.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line === '') {
+      if (!prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      continue
+    }
+    prevBlank = false
+    if (line.startsWith(';') || line.startsWith('#')) {
+      out.push(line)
+      continue
+    }
+    if (/^\[.*\]$/.test(line)) {
+      if (out.length && out[out.length - 1] !== '') out.push('')
+      out.push(`[${line.slice(1, -1).trim()}]`)
+      continue
+    }
+    const eq = line.indexOf('=')
+    if (eq >= 0) {
+      out.push(`${line.slice(0, eq).trim()} = ${line.slice(eq + 1).trim()}`)
+    } else {
+      out.push(line) // 未知行原样保留
+    }
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}
+
+// Java .properties 格式化：键值分隔符(= : 或空白)统一为 =，注释(# !)与续行保留。
+export function formatProperties(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const lines = input.split(/\r?\n/)
+  const out: string[] = []
+  let prevBlank = false
+  let i = 0
+  while (i < lines.length) {
+    const line = lines[i].trim()
+    if (line === '') {
+      if (!prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      i++
+      continue
+    }
+    prevBlank = false
+    if (line.startsWith('#') || line.startsWith('!')) {
+      out.push(line)
+      i++
+      continue
+    }
+    // 首个未转义的 = : 或空白处分隔键与值
+    const m = line.match(/^((?:\\.|[^\\=:\s])+)\s*[=:\s]?\s*(.*)$/)
+    const key = m ? m[1] : line
+    const val = m ? m[2] : ''
+    out.push(`${key}=${val}`)
+    // 续行：后续物理行左去空白后原样并入（Java 语义）
+    while (endsWithContinuation(out[out.length - 1]) && i + 1 < lines.length) {
+      i++
+      out.push(lines[i].replace(/^\s+/, ''))
+    }
+    i++
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}

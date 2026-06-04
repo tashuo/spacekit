@@ -18,7 +18,7 @@ export type ToolLayout = 'io' | 'diff' | 'regex' | 'qrcode' | 'query' | 'crypto'
 export type ToolCategory = 'json' | 'convert' | 'codec' | 'timestamp' | 'crypto' | 'text' | 'format'
 
 // 编辑器语法高亮语言（语言解析器按需动态加载，见 components/Editor.tsx）
-export type EditorLang = 'json' | 'text' | 'sql' | 'css' | 'html' | 'javascript' | 'xml' | 'yaml' | 'json5' | 'toml' | 'markdown'
+export type EditorLang = 'json' | 'text' | 'sql' | 'css' | 'html' | 'javascript' | 'xml' | 'yaml' | 'json5' | 'toml' | 'markdown' | 'properties'
 
 // 注册表条目：声明式描述一个工具
 export interface ToolDef {

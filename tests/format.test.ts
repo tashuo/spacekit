@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown } from '@/lib/tools/format'
+import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown, formatIni, formatProperties } from '@/lib/tools/format'
 
 describe('formatSql', () => {
   it('uppercases keywords and indents', () => {
@@ -183,5 +183,35 @@ describe('formatMarkdown', () => {
   })
   it('errors on empty input', () => {
     expect(formatMarkdown('   ').ok).toBe(false)
+  })
+})
+
+describe('formatIni', () => {
+  it('normalizes key spacing and section blank lines', () => {
+    expect(formatIni('a=1\n[s]\nb =  2').output).toBe('a = 1\n\n[s]\nb = 2')
+  })
+  it('preserves comments and collapses blank lines', () => {
+    expect(formatIni('; c\n\n\nk=v').output).toBe('; c\n\nk = v')
+  })
+  it('trims section names', () => {
+    expect(formatIni('[ sec ]\nx=1').output).toBe('[sec]\nx = 1')
+  })
+  it('errors on empty input', () => {
+    expect(formatIni('   ').ok).toBe(false)
+  })
+})
+
+describe('formatProperties', () => {
+  it('normalizes colon and whitespace separators to =', () => {
+    expect(formatProperties('a : 1\nb   2').output).toBe('a=1\nb=2')
+  })
+  it('keeps # and ! comments', () => {
+    expect(formatProperties('! note\n# c\nk = v').output).toBe('! note\n# c\nk=v')
+  })
+  it('preserves line continuations', () => {
+    expect(formatProperties('k = a\\\n   b').output).toBe('k=a\\\nb')
+  })
+  it('errors on empty input', () => {
+    expect(formatProperties('').ok).toBe(false)
   })
 })
