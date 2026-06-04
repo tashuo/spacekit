@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Editor } from './Editor'
 import { AlertIcon, CheckIcon, CopyIcon, TrashIcon } from '@/components/icons'
 import { useT } from '@/lib/i18n'
+import { useHistory } from '@/lib/store/history'
 import type { ToolDef } from '@/lib/tools/types'
 
 function PaneHeader({ label, children }: { label: string; children?: React.ReactNode }) {
@@ -15,6 +16,7 @@ function PaneHeader({ label, children }: { label: string; children?: React.React
 
 export function ToolPanel({ tool }: { tool: ToolDef }) {
   const t = useT()
+  const addHistory = useHistory((s) => s.add)
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -32,6 +34,8 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
   function copy() {
     if (!result.output) return
     void navigator.clipboard.writeText(result.output)
+    // 转换类工具记入历史；加解密/哈希等敏感类（crypto）不记
+    if (tool.category !== 'crypto') addHistory({ kind: 'tool', toolId: tool.id, value: result.output, input })
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }

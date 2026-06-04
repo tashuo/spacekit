@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { generateRandom, generateMemorable, generatePin, estimateStrength, type StrengthLabel } from '@/lib/tools/password'
 import { useT } from '@/lib/i18n'
-import { CopyIcon, CheckIcon, RefreshIcon } from '@/components/icons'
+import { CopyIcon, CheckIcon, RefreshIcon, TrashIcon } from '@/components/icons'
+import { useHistory } from '@/lib/store/history'
 import type { ToolDef } from '@/lib/tools/types'
 
 type PwType = 'random' | 'memorable' | 'pin'
@@ -75,6 +76,9 @@ export function PasswordPanel({ tool }: { tool: ToolDef }) {
   const [pinLength, setPinLength] = useState(6)
   const [password, setPassword] = useState('')
   const [copied, setCopied] = useState(false)
+  const addHistory = useHistory((s) => s.add)
+  const removeHistory = useHistory((s) => s.remove)
+  const recent = useHistory((s) => s.entries).filter((e) => e.kind === 'password').slice(0, 6)
 
   function generate() {
     if (type === 'random') {
@@ -95,6 +99,7 @@ export function PasswordPanel({ tool }: { tool: ToolDef }) {
   function copy() {
     if (!password) return
     void navigator.clipboard.writeText(password)
+    addHistory({ kind: 'password', toolId: tool.id, value: password })
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }
@@ -194,6 +199,33 @@ export function PasswordPanel({ tool }: { tool: ToolDef }) {
         )}
 
         {type === 'pin' && <Slider label={t('pw.length')} min={4} max={12} value={pinLength} onChange={setPinLength} />}
+
+        {recent.length > 0 && (
+          <div className="flex flex-col gap-1 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+            <span className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{t('history.recent')}</span>
+            {recent.map((e) => (
+              <div key={e.id} className="group flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                <span className="flex-1 truncate font-mono text-xs text-zinc-600 dark:text-zinc-300">{e.value}</span>
+                <button
+                  type="button"
+                  onClick={() => void navigator.clipboard.writeText(e.value)}
+                  aria-label={t('action.copy')}
+                  className="shrink-0 cursor-pointer text-zinc-400 transition-colors hover:text-teal-600 dark:hover:text-teal-400"
+                >
+                  <CopyIcon className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeHistory(e.id)}
+                  aria-label={t('action.delete')}
+                  className="shrink-0 cursor-pointer text-zinc-400 transition-colors hover:text-rose-500"
+                >
+                  <TrashIcon className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

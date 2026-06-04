@@ -7,13 +7,16 @@ import { QueryPanel } from '@/components/QueryPanel'
 import { CryptoPanel } from '@/components/CryptoPanel'
 import { QrPanel } from '@/components/QrPanel'
 import { PasswordPanel } from '@/components/PasswordPanel'
+import { HistoryPanel } from '@/components/HistoryPanel'
 import { findTool } from '@/lib/tools/registry'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
+import { useHistory } from '@/lib/store/history'
 import { useT } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
 import {
   ArrowLeftIcon,
   BracesIcon,
+  ClockIcon,
   CommandIcon,
   GlobeIcon,
   MonitorIcon,
@@ -109,6 +112,21 @@ function LangToggle() {
   )
 }
 
+function HistoryButton({ onClick }: { onClick: () => void }) {
+  const t = useT()
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={t('history.open')}
+      title={t('history.open')}
+      className="grid h-8 w-8 cursor-pointer place-items-center rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-500 transition-colors hover:text-teal-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:text-teal-400"
+    >
+      <ClockIcon className="h-4 w-4" />
+    </button>
+  )
+}
+
 function Brand() {
   const t = useT()
   return (
@@ -129,15 +147,18 @@ export function App() {
   const theme = usePrefs((s) => s.theme)
   const setTheme = usePrefs((s) => s.setTheme)
   const hydrate = usePrefs((s) => s.hydrate)
+  const hydrateHistory = useHistory((s) => s.hydrate)
   const pushRecent = usePrefs((s) => s.pushRecent)
   const favoriteToolIds = usePrefs((s) => s.favoriteToolIds)
   const toggleFavorite = usePrefs((s) => s.toggleFavorite)
 
   const [activeToolId, setActiveToolId] = useState<string | null>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   useEffect(() => {
     void hydrate()
+    void hydrateHistory()
   }, [])
   useEffect(() => {
     applyTheme(theme)
@@ -149,8 +170,9 @@ export function App() {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault()
         if (activeToolId) setPaletteOpen((v) => !v)
-      } else if (e.key === 'Escape' && paletteOpen) {
+      } else if (e.key === 'Escape') {
         setPaletteOpen(false)
+        setHistoryOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -172,6 +194,7 @@ export function App() {
         <div className="flex items-center gap-3 px-5 py-4">
           <Brand />
           <div className="flex-1" />
+          <HistoryButton onClick={() => setHistoryOpen(true)} />
           <LangToggle />
           <ThemeToggle theme={theme} onChange={setTheme} />
         </div>
@@ -180,6 +203,7 @@ export function App() {
             <CommandPalette onSelect={selectTool} />
           </div>
         </div>
+        {historyOpen && <HistoryPanel onClose={() => setHistoryOpen(false)} />}
       </div>
     )
   }
@@ -225,6 +249,7 @@ export function App() {
           K
           <span className="text-zinc-400">{t('nav.search')}</span>
         </button>
+        <HistoryButton onClick={() => setHistoryOpen(true)} />
         <LangToggle />
         <ThemeToggle theme={theme} onChange={setTheme} />
       </header>
@@ -243,6 +268,7 @@ export function App() {
           </div>
         </div>
       )}
+      {historyOpen && <HistoryPanel onClose={() => setHistoryOpen(false)} />}
     </div>
   )
 }

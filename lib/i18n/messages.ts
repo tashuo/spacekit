@@ -135,6 +135,16 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'pw.strength.strong': { zh: '强', en: 'Strong' },
   'pw.strength.excellent': { zh: '极强', en: 'Excellent' },
 
+  // 历史记录
+  'history.open': { zh: '历史记录', en: 'History' },
+  'history.title': { zh: '历史记录', en: 'History' },
+  'history.empty': { zh: '暂无历史', en: 'No history yet' },
+  'history.clear': { zh: '清空', en: 'Clear' },
+  'history.record': { zh: '记录历史', en: 'Record history' },
+  'history.recent': { zh: '最近生成', en: 'Recently generated' },
+  'history.kind.password': { zh: '密码', en: 'Password' },
+  'action.delete': { zh: '删除', en: 'Delete' },
+
   // 工具名
   'tool.json-format': { zh: 'JSON 格式化', en: 'JSON Format' },
   'tool.json-minify': { zh: 'JSON 压缩', en: 'JSON Minify' },
