@@ -48,6 +48,7 @@
     "crypto-js": "^4.2.0",
     "csso": "^5.0.5",
     "fast-xml-parser": "^5.8.0",
+    "graphql": "^16.14.1",
     "js-beautify": "^1.15.4",
     "json5": "^2.2.3",
     "jsonpath-plus": "^10.4.0",

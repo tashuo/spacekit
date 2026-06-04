@@ -98,7 +98,7 @@ describe('registry', () => {
     }
   })
   it('registers format tools that run asynchronously via dynamic import', async () => {
-    for (const id of ['sql-format', 'sql-minify', 'css-format', 'css-minify', 'html-format', 'js-format', 'xml-format', 'xml-minify', 'yaml-format', 'json5-format', 'toml-format', 'markdown-format', 'ini-format', 'properties-format', 'dockerfile-format', 'env-format']) {
+    for (const id of ['sql-format', 'sql-minify', 'css-format', 'css-minify', 'html-format', 'js-format', 'xml-format', 'xml-minify', 'yaml-format', 'json5-format', 'toml-format', 'markdown-format', 'ini-format', 'properties-format', 'dockerfile-format', 'env-format', 'proto-format', 'graphql-format', 'crontab-format', 'gitignore-format']) {
       expect(findTool(id)!.category).toBe('format')
     }
     const r = findTool('sql-format')!.run!('select 1')
@@ -118,5 +118,14 @@ describe('registry', () => {
     expect(searchTools('properties').some((t) => t.id === 'properties-format')).toBe(true)
     expect(searchTools('docker').some((t) => t.id === 'dockerfile-format')).toBe(true)
     expect(searchTools('dotenv').some((t) => t.id === 'env-format')).toBe(true)
+    expect(searchTools('graphql').some((t) => t.id === 'graphql-format')).toBe(true)
+    expect(searchTools('proto').some((t) => t.id === 'proto-format')).toBe(true)
+    expect(searchTools('cron').some((t) => t.id === 'crontab-format')).toBe(true)
+    expect(searchTools('gitignore').some((t) => t.id === 'gitignore-format')).toBe(true)
+  })
+  it('format tools all carry a subgroup for palette grouping', () => {
+    const fmt = TOOLS.filter((t) => t.category === 'format')
+    expect(fmt.length).toBeGreaterThan(0)
+    expect(fmt.every((t) => !!t.subgroup)).toBe(true)
   })
 })

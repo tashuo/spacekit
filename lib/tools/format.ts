@@ -8,6 +8,7 @@ import JSON5 from 'json5'
 import { parse as tomlParse, stringify as tomlStringify } from 'smol-toml'
 import { remark } from 'remark'
 import remarkGfm from 'remark-gfm'
+import { parse as gqlParse, print as gqlPrint } from 'graphql'
 
 // SQL 格式化：缩进 2 空格、关键字大写。dialect 取通用 'sql'。
 export function formatSql(input: string): ToolResult {
@@ -298,6 +299,145 @@ export function formatEnv(input: string): ToolResult {
       out.push(`${m[1] ? 'export ' : ''}${m[2]}=${m[3].replace(/\s+$/, '')}`)
     } else {
       out.push(line) // 无 = 的行原样保留
+    }
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}
+
+// GraphQL 格式化：parse + print 规范化 SDL / 查询（标准缩进与字段排布）。
+export function formatGraphql(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    return ok(gqlPrint(gqlParse(input)))
+  } catch (e) {
+    return err(e instanceof Error ? e.message : '非法 GraphQL')
+  }
+}
+
+// Protobuf 格式化：按花括号深度重新缩进(2 空格)，跳过字符串与 // /* */ 注释中的括号；保留注释与顺序。
+export function formatProto(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const out: string[] = []
+  let depth = 0
+  let prevBlank = false
+  let inBlock = false // 跨行块注释
+  for (const raw of input.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line === '') {
+      if (!inBlock && !prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      continue
+    }
+    prevBlank = false
+    let net = 0 // 本行净花括号增量
+    let leadingClose = 0 // 行首(无实质内容前)的 } 个数 → 决定本行缩进回退
+    let sawContent = false
+    let inStr: string | null = null
+    let blk: boolean = inBlock
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i]
+      const c2 = line[i + 1]
+      if (blk) {
+        if (c === '*' && c2 === '/') {
+          blk = false
+          i++
+        }
+        continue
+      }
+      if (inStr) {
+        if (c === '\\') i++
+        else if (c === inStr) inStr = null
+        continue
+      }
+      if (c === '/' && c2 === '/') break
+      if (c === '/' && c2 === '*') {
+        blk = true
+        i++
+        continue
+      }
+      if (c === '"' || c === "'") {
+        inStr = c
+        sawContent = true
+        continue
+      }
+      if (c === '{') {
+        net++
+        sawContent = true
+        continue
+      }
+      if (c === '}') {
+        net--
+        if (!sawContent) leadingClose++
+        continue
+      }
+      if (c !== ' ' && c !== '\t') sawContent = true
+    }
+    out.push('  '.repeat(Math.max(0, depth - leadingClose)) + line)
+    depth = Math.max(0, depth + net)
+    inBlock = blk
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}
+
+// .gitignore 格式化：逐行去首尾空白、保留注释与顺序、折叠连续空行。
+export function formatGitignore(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const out: string[] = []
+  let prevBlank = false
+  for (const raw of input.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line === '') {
+      if (!prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      continue
+    }
+    prevBlank = false
+    out.push(line)
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}
+
+// crontab 格式化：5 个时间字段间空白归一为单空格、命令原样保留；@special、环境变量、注释各自处理。
+export function formatCrontab(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const out: string[] = []
+  let prevBlank = false
+  for (const raw of input.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line === '') {
+      if (!prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      continue
+    }
+    prevBlank = false
+    if (line.startsWith('#')) {
+      out.push(line)
+      continue
+    }
+    // @reboot / @daily 等特殊调度
+    const special = line.match(/^(@\S+)(?:\s+([\s\S]+))?$/)
+    if (special) {
+      out.push(special[2] ? `${special[1]} ${special[2]}` : special[1])
+      continue
+    }
+    // 环境变量赋值（cron 允许）
+    const env = line.match(/^(\w+)\s*=\s*(.*)$/)
+    if (env) {
+      out.push(`${env[1]}=${env[2]}`)
+      continue
+    }
+    // 标准 5 字段 + 命令（命令保持原样，仅归一字段间空白）
+    const m = line.match(/^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+([\s\S]+)$/)
+    if (m) {
+      out.push(`${m[1]} ${m[2]} ${m[3]} ${m[4]} ${m[5]} ${m[6]}`)
+    } else {
+      out.push(line) // 字段不足，原样保留
     }
   }
   return ok(trimTrailingBlank(out).join('\n'))

@@ -18,7 +18,7 @@ export type ToolLayout = 'io' | 'diff' | 'regex' | 'qrcode' | 'query' | 'crypto'
 export type ToolCategory = 'json' | 'convert' | 'codec' | 'timestamp' | 'crypto' | 'text' | 'format'
 
 // 编辑器语法高亮语言（语言解析器按需动态加载，见 components/Editor.tsx）
-export type EditorLang = 'json' | 'text' | 'sql' | 'css' | 'html' | 'javascript' | 'xml' | 'yaml' | 'json5' | 'toml' | 'markdown' | 'properties' | 'dockerfile'
+export type EditorLang = 'json' | 'text' | 'sql' | 'css' | 'html' | 'javascript' | 'xml' | 'yaml' | 'json5' | 'toml' | 'markdown' | 'properties' | 'dockerfile' | 'protobuf'
 
 // 注册表条目：声明式描述一个工具
 export interface ToolDef {
@@ -32,6 +32,8 @@ export interface ToolDef {
   inOverlay?: boolean
   // io 布局编辑器的语法高亮语言；缺省时按 category 推断（json→json，其余→text）
   editorLang?: EditorLang
+  // 命令面板内的二级分组键（用于工具数量多的分类，如 format）；i18n 用 subgroup.<key>
+  subgroup?: string
   // io 布局的纯函数：输入字符串 + 选项 → 结果。
   // 可返回 Promise：重型实现（如格式化库）用动态 import 按需加载，避免打进 overlay/background 包。
   run?: (input: string, options?: Record<string, unknown>) => ToolResult | Promise<ToolResult>

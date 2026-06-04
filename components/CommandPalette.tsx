@@ -102,6 +102,72 @@ export function CommandPalette({
     }
   }
 
+  function renderOption(toolItem: ToolDef, index: number, groupKey: string) {
+    const isActive = index === active
+    const fav = favoriteToolIds.includes(toolItem.id)
+    return (
+      <div
+        key={`${groupKey}-${toolItem.id}`}
+        role="option"
+        aria-selected={isActive}
+        data-active={isActive}
+        onClick={() => onSelect(toolItem.id)}
+        onMouseMove={() => setActive(index)}
+        className={`group flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors ${
+          isActive ? 'bg-teal-50 dark:bg-teal-500/10' : ''
+        }`}
+      >
+        <span className={`h-2 w-2 shrink-0 rounded-full ${CAT_DOT[toolItem.category]}`} />
+        <span
+          className={`flex-1 truncate text-sm ${
+            isActive ? 'font-medium text-teal-700 dark:text-teal-300' : 'text-zinc-700 dark:text-zinc-200'
+          }`}
+        >
+          {t(`tool.${toolItem.id}`)}
+        </span>
+        <span className="shrink-0 font-mono text-[10px] text-zinc-400">{t(`cat.${toolItem.category}`)}</span>
+        <button
+          type="button"
+          aria-label={fav ? t('fav.remove') : t('fav.add')}
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleFavorite(toolItem.id)
+          }}
+          className={`shrink-0 cursor-pointer rounded p-0.5 transition-colors ${
+            fav
+              ? 'text-amber-400'
+              : 'text-zinc-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-zinc-600'
+          }`}
+        >
+          {fav ? <StarFilledIcon className="h-3.5 w-3.5" /> : <StarIcon className="h-3.5 w-3.5" />}
+        </button>
+        <ReturnIcon className={`h-3.5 w-3.5 shrink-0 text-teal-500 ${isActive ? '' : 'invisible'}`} />
+      </div>
+    )
+  }
+
+  // 渲染一个分组内的所有项；分类组(g.dot)内按 subgroup 插入二级小标题
+  function renderGroupItems(g: (typeof positioned)[number]) {
+    if (!g.dot) return g.items.map(({ tool, index }) => renderOption(tool, index, g.key))
+    const rows: React.ReactNode[] = []
+    let lastSub: string | undefined
+    for (const { tool, index } of g.items) {
+      if (tool.subgroup && tool.subgroup !== lastSub) {
+        lastSub = tool.subgroup
+        rows.push(
+          <div
+            key={`sub-${g.key}-${tool.subgroup}`}
+            className="px-2 pt-2 pb-0.5 pl-4 text-[10px] font-medium uppercase tracking-wide text-zinc-300 dark:text-zinc-600"
+          >
+            {t(`subgroup.${tool.subgroup}`)}
+          </div>,
+        )
+      }
+      rows.push(renderOption(tool, index, g.key))
+    }
+    return rows
+  }
+
   return (
     <div className="flex max-h-[70vh] w-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
       <div className="flex items-center gap-3 border-b border-zinc-100 px-4 dark:border-zinc-800">
@@ -144,49 +210,7 @@ export function CommandPalette({
                 ) : null}
                 {t(g.labelKey)}
               </div>
-              {g.items.map(({ tool: toolItem, index }) => {
-                const isActive = index === active
-                const fav = favoriteToolIds.includes(toolItem.id)
-                return (
-                  <div
-                    key={`${g.key}-${toolItem.id}`}
-                    role="option"
-                    aria-selected={isActive}
-                    data-active={isActive}
-                    onClick={() => onSelect(toolItem.id)}
-                    onMouseMove={() => setActive(index)}
-                    className={`group flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors ${
-                      isActive ? 'bg-teal-50 dark:bg-teal-500/10' : ''
-                    }`}
-                  >
-                    <span className={`h-2 w-2 shrink-0 rounded-full ${CAT_DOT[toolItem.category]}`} />
-                    <span
-                      className={`flex-1 truncate text-sm ${
-                        isActive ? 'font-medium text-teal-700 dark:text-teal-300' : 'text-zinc-700 dark:text-zinc-200'
-                      }`}
-                    >
-                      {t(`tool.${toolItem.id}`)}
-                    </span>
-                    <span className="shrink-0 font-mono text-[10px] text-zinc-400">{t(`cat.${toolItem.category}`)}</span>
-                    <button
-                      type="button"
-                      aria-label={fav ? t('fav.remove') : t('fav.add')}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFavorite(toolItem.id)
-                      }}
-                      className={`shrink-0 cursor-pointer rounded p-0.5 transition-colors ${
-                        fav
-                          ? 'text-amber-400'
-                          : 'text-zinc-300 opacity-0 hover:text-amber-400 group-hover:opacity-100 dark:text-zinc-600'
-                      }`}
-                    >
-                      {fav ? <StarFilledIcon className="h-3.5 w-3.5" /> : <StarIcon className="h-3.5 w-3.5" />}
-                    </button>
-                    <ReturnIcon className={`h-3.5 w-3.5 shrink-0 text-teal-500 ${isActive ? '' : 'invisible'}`} />
-                  </div>
-                )
-              })}
+              {renderGroupItems(g)}
             </div>
           ))
         )}

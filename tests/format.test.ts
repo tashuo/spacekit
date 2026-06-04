@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown, formatIni, formatProperties, formatDockerfile, formatEnv } from '@/lib/tools/format'
+import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown, formatIni, formatProperties, formatDockerfile, formatEnv, formatGraphql, formatProto, formatGitignore, formatCrontab } from '@/lib/tools/format'
 
 describe('formatSql', () => {
   it('uppercases keywords and indents', () => {
@@ -242,5 +242,63 @@ describe('formatEnv', () => {
   })
   it('errors on empty input', () => {
     expect(formatEnv('').ok).toBe(false)
+  })
+})
+
+describe('formatGraphql', () => {
+  it('pretty-prints a query', () => {
+    expect(formatGraphql('{a b c}').output).toBe('{\n  a\n  b\n  c\n}')
+  })
+  it('normalizes SDL', () => {
+    const r = formatGraphql('type  Q{a:String}')
+    expect(r.ok).toBe(true)
+    expect(r.output).toContain('type Q {')
+    expect(r.output).toContain('a: String')
+  })
+  it('errors on invalid graphql', () => {
+    expect(formatGraphql('{ a b').ok).toBe(false)
+  })
+  it('errors on empty input', () => {
+    expect(formatGraphql('  ').ok).toBe(false)
+  })
+})
+
+describe('formatProto', () => {
+  it('reindents by brace depth', () => {
+    expect(formatProto('message M {\nstring name = 1;\n}').output).toBe('message M {\n  string name = 1;\n}')
+  })
+  it('handles nested blocks', () => {
+    expect(formatProto('message A {\nmessage B {\nint32 x = 1;\n}\n}').output).toBe(
+      'message A {\n  message B {\n    int32 x = 1;\n  }\n}',
+    )
+  })
+  it('ignores braces inside strings and comments', () => {
+    expect(formatProto('message M {\noption x = "}";  // }\nint32 y = 1;\n}').output).toBe(
+      'message M {\n  option x = "}";  // }\n  int32 y = 1;\n}',
+    )
+  })
+  it('errors on empty input', () => {
+    expect(formatProto('').ok).toBe(false)
+  })
+})
+
+describe('formatGitignore', () => {
+  it('trims lines and collapses blanks', () => {
+    expect(formatGitignore('  node_modules/  \n\n\n# build\n  dist ').output).toBe('node_modules/\n\n# build\ndist')
+  })
+  it('errors on empty input', () => {
+    expect(formatGitignore('   ').ok).toBe(false)
+  })
+})
+
+describe('formatCrontab', () => {
+  it('normalizes schedule spacing, keeps command verbatim', () => {
+    expect(formatCrontab('*/5   *  * * *   echo  hi').output).toBe('*/5 * * * * echo  hi')
+  })
+  it('handles @special and env and comments', () => {
+    expect(formatCrontab('# c\nMAILTO = a@b\n@reboot   /run.sh').output).toBe('# c\nMAILTO=a@b\n@reboot /run.sh')
+  })
+  it('errors on empty input', () => {
+    expect(formatCrontab('').ok).toBe(false)
   })
 })

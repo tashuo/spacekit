@@ -24,6 +24,7 @@ const LANG_LOADERS: Record<EditorLang, (() => Promise<Extension>) | null> = {
   // INI / .properties / .env 共用 legacy-modes 的 properties StreamParser
   properties: () => import('@codemirror/legacy-modes/mode/properties').then((m) => StreamLanguage.define(m.properties)),
   dockerfile: () => import('@codemirror/legacy-modes/mode/dockerfile').then((m) => StreamLanguage.define(m.dockerFile)),
+  protobuf: () => import('@codemirror/legacy-modes/mode/protobuf').then((m) => StreamLanguage.define(m.protobuf)),
 }
 
 // 主题用 CSS 变量取色（定义在 tailwind.css 的 :root / .dark），

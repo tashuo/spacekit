@@ -45,6 +45,12 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'cat.crypto': { zh: '加解密', en: 'Crypto' },
   'cat.text': { zh: '文本', en: 'Text' },
   'cat.format': { zh: '格式化', en: 'Format' },
+  // 格式化分类的二级分组
+  'subgroup.data': { zh: '数据 / 序列化', en: 'Data' },
+  'subgroup.web': { zh: 'Web / 样式', en: 'Web' },
+  'subgroup.query': { zh: '查询', en: 'Query' },
+  'subgroup.config': { zh: '配置', en: 'Config' },
+  'subgroup.doc': { zh: '文档', en: 'Docs' },
 
   // io 面板通用
   'pane.input': { zh: '输入', en: 'Input' },
@@ -202,4 +208,8 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.properties-format': { zh: 'Properties 格式化', en: 'Properties Format' },
   'tool.dockerfile-format': { zh: 'Dockerfile 格式化', en: 'Dockerfile Format' },
   'tool.env-format': { zh: '.env 格式化', en: '.env Format' },
+  'tool.proto-format': { zh: 'Protobuf 格式化', en: 'Protobuf Format' },
+  'tool.graphql-format': { zh: 'GraphQL 格式化', en: 'GraphQL Format' },
+  'tool.crontab-format': { zh: 'crontab 格式化', en: 'crontab Format' },
+  'tool.gitignore-format': { zh: '.gitignore 格式化', en: '.gitignore Format' },
 }

@@ -50,22 +50,31 @@ export const TOOLS: ToolDef[] = [
   { id: 'qr-generate', category: 'text', name: '二维码生成', keywords: ['qr', '二维码', 'qrcode', '生成'], layout: 'qrcode' },
   { id: 'qr-decode', category: 'text', name: '二维码解析', keywords: ['qr', '二维码', 'qrcode', '解析', '识别'], layout: 'qrcode' },
   { id: 'password-generator', category: 'crypto', name: '密码生成器', keywords: ['password', '密码', '随机', 'random', 'generate', 'pin'], layout: 'password' },
-  { id: 'sql-format', category: 'format', name: 'SQL 格式化', keywords: ['sql', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'sql', run: (i) => import('./format').then((m) => m.formatSql(i)) },
-  { id: 'sql-minify', category: 'format', name: 'SQL 压缩', keywords: ['sql', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'sql', run: (i) => import('./format').then((m) => m.minifySql(i)) },
-  { id: 'css-format', category: 'format', name: 'CSS 格式化', keywords: ['css', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.formatCss(i)) },
-  { id: 'css-minify', category: 'format', name: 'CSS 压缩', keywords: ['css', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.minifyCss(i)) },
-  { id: 'html-format', category: 'format', name: 'HTML 格式化', keywords: ['html', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'html', run: (i) => import('./format').then((m) => m.formatHtml(i)) },
-  { id: 'js-format', category: 'format', name: 'JS 格式化', keywords: ['js', 'javascript', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'javascript', run: (i) => import('./format').then((m) => m.formatJs(i)) },
-  { id: 'xml-format', category: 'format', name: 'XML 格式化', keywords: ['xml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'xml', run: (i) => import('./format').then((m) => m.formatXml(i)) },
-  { id: 'xml-minify', category: 'format', name: 'XML 压缩', keywords: ['xml', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'xml', run: (i) => import('./format').then((m) => m.minifyXml(i)) },
-  { id: 'yaml-format', category: 'format', name: 'YAML 格式化', keywords: ['yaml', 'yml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'yaml', run: (i) => import('./format').then((m) => m.formatYaml(i)) },
-  { id: 'json5-format', category: 'format', name: 'JSON5 格式化', keywords: ['json5', 'json', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'json5', run: (i) => import('./format').then((m) => m.formatJson5(i)) },
-  { id: 'toml-format', category: 'format', name: 'TOML 格式化', keywords: ['toml', '格式化', '美化', 'beautify', 'config'], layout: 'io', editorLang: 'toml', run: (i) => import('./format').then((m) => m.formatToml(i)) },
-  { id: 'markdown-format', category: 'format', name: 'Markdown 格式化', keywords: ['markdown', 'md', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'markdown', run: (i) => import('./format').then((m) => m.formatMarkdown(i)) },
-  { id: 'ini-format', category: 'format', name: 'INI 格式化', keywords: ['ini', 'config', '配置', '格式化', '美化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatIni(i)) },
-  { id: 'properties-format', category: 'format', name: 'Properties 格式化', keywords: ['properties', 'java', 'config', '配置', '格式化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatProperties(i)) },
-  { id: 'dockerfile-format', category: 'format', name: 'Dockerfile 格式化', keywords: ['dockerfile', 'docker', '格式化', '美化'], layout: 'io', editorLang: 'dockerfile', run: (i) => import('./format').then((m) => m.formatDockerfile(i)) },
-  { id: 'env-format', category: 'format', name: '.env 格式化', keywords: ['env', 'dotenv', '环境变量', 'config', '格式化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatEnv(i)) },
+  // —— 格式化 · 数据/序列化 ——
+  { id: 'json5-format', category: 'format', subgroup: 'data', name: 'JSON5 格式化', keywords: ['json5', 'json', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'json5', run: (i) => import('./format').then((m) => m.formatJson5(i)) },
+  { id: 'yaml-format', category: 'format', subgroup: 'data', name: 'YAML 格式化', keywords: ['yaml', 'yml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'yaml', run: (i) => import('./format').then((m) => m.formatYaml(i)) },
+  { id: 'xml-format', category: 'format', subgroup: 'data', name: 'XML 格式化', keywords: ['xml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'xml', run: (i) => import('./format').then((m) => m.formatXml(i)) },
+  { id: 'xml-minify', category: 'format', subgroup: 'data', name: 'XML 压缩', keywords: ['xml', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'xml', run: (i) => import('./format').then((m) => m.minifyXml(i)) },
+  { id: 'toml-format', category: 'format', subgroup: 'data', name: 'TOML 格式化', keywords: ['toml', '格式化', '美化', 'beautify', 'config'], layout: 'io', editorLang: 'toml', run: (i) => import('./format').then((m) => m.formatToml(i)) },
+  { id: 'proto-format', category: 'format', subgroup: 'data', name: 'Protobuf 格式化', keywords: ['protobuf', 'proto', 'grpc', '格式化', '美化'], layout: 'io', editorLang: 'protobuf', run: (i) => import('./format').then((m) => m.formatProto(i)) },
+  // —— 格式化 · Web/样式 ——
+  { id: 'html-format', category: 'format', subgroup: 'web', name: 'HTML 格式化', keywords: ['html', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'html', run: (i) => import('./format').then((m) => m.formatHtml(i)) },
+  { id: 'css-format', category: 'format', subgroup: 'web', name: 'CSS 格式化', keywords: ['css', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.formatCss(i)) },
+  { id: 'css-minify', category: 'format', subgroup: 'web', name: 'CSS 压缩', keywords: ['css', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'css', run: (i) => import('./format').then((m) => m.minifyCss(i)) },
+  { id: 'js-format', category: 'format', subgroup: 'web', name: 'JS 格式化', keywords: ['js', 'javascript', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'javascript', run: (i) => import('./format').then((m) => m.formatJs(i)) },
+  // —— 格式化 · 查询 ——
+  { id: 'sql-format', category: 'format', subgroup: 'query', name: 'SQL 格式化', keywords: ['sql', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'sql', run: (i) => import('./format').then((m) => m.formatSql(i)) },
+  { id: 'sql-minify', category: 'format', subgroup: 'query', name: 'SQL 压缩', keywords: ['sql', '压缩', 'minify', 'compress'], layout: 'io', editorLang: 'sql', run: (i) => import('./format').then((m) => m.minifySql(i)) },
+  { id: 'graphql-format', category: 'format', subgroup: 'query', name: 'GraphQL 格式化', keywords: ['graphql', 'gql', '格式化', '美化', 'beautify'], layout: 'io', run: (i) => import('./format').then((m) => m.formatGraphql(i)) },
+  // —— 格式化 · 配置 ——
+  { id: 'ini-format', category: 'format', subgroup: 'config', name: 'INI 格式化', keywords: ['ini', 'config', '配置', '格式化', '美化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatIni(i)) },
+  { id: 'properties-format', category: 'format', subgroup: 'config', name: 'Properties 格式化', keywords: ['properties', 'java', 'config', '配置', '格式化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatProperties(i)) },
+  { id: 'env-format', category: 'format', subgroup: 'config', name: '.env 格式化', keywords: ['env', 'dotenv', '环境变量', 'config', '格式化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatEnv(i)) },
+  { id: 'dockerfile-format', category: 'format', subgroup: 'config', name: 'Dockerfile 格式化', keywords: ['dockerfile', 'docker', '格式化', '美化'], layout: 'io', editorLang: 'dockerfile', run: (i) => import('./format').then((m) => m.formatDockerfile(i)) },
+  { id: 'crontab-format', category: 'format', subgroup: 'config', name: 'crontab 格式化', keywords: ['crontab', 'cron', '定时', '格式化'], layout: 'io', run: (i) => import('./format').then((m) => m.formatCrontab(i)) },
+  { id: 'gitignore-format', category: 'format', subgroup: 'config', name: '.gitignore 格式化', keywords: ['gitignore', 'git', '格式化'], layout: 'io', run: (i) => import('./format').then((m) => m.formatGitignore(i)) },
+  // —— 格式化 · 文档 ——
+  { id: 'markdown-format', category: 'format', subgroup: 'doc', name: 'Markdown 格式化', keywords: ['markdown', 'md', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'markdown', run: (i) => import('./format').then((m) => m.formatMarkdown(i)) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {
