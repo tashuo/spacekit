@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml } from '@/lib/tools/format'
+import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml } from '@/lib/tools/format'
 
 describe('formatSql', () => {
   it('uppercases keywords and indents', () => {
@@ -124,5 +124,42 @@ describe('formatYaml', () => {
   })
   it('errors on empty input', () => {
     expect(formatYaml('   ').ok).toBe(false)
+  })
+})
+
+describe('formatJson5', () => {
+  it('pretty-prints with 2-space indent', () => {
+    expect(formatJson5('{a:1,b:[2,3]}').output).toBe('{\n  a: 1,\n  b: [\n    2,\n    3,\n  ],\n}')
+  })
+  it('accepts comments and trailing commas', () => {
+    const r = formatJson5('{ a: 1, /* c */ }')
+    expect(r.ok).toBe(true)
+    expect(r.output).toContain('a: 1')
+  })
+  it('errors on invalid input', () => {
+    expect(formatJson5('{a:}').ok).toBe(false)
+  })
+  it('errors on empty input', () => {
+    expect(formatJson5('  ').ok).toBe(false)
+  })
+})
+
+describe('formatToml', () => {
+  it('normalizes into valid toml', () => {
+    const r = formatToml('title="x"\n[owner]\nname="A"')
+    expect(r.ok).toBe(true)
+    expect(r.output).toContain('title = "x"')
+    expect(r.output).toContain('[owner]')
+    expect(r.output).toContain('name = "A"')
+  })
+  it('round-trips through parse/stringify', () => {
+    const out = formatToml('a = 1\nb = true').output
+    expect(formatToml(out).output).toBe(out)
+  })
+  it('errors on invalid toml', () => {
+    expect(formatToml('a = = 1').ok).toBe(false)
+  })
+  it('errors on empty input', () => {
+    expect(formatToml('').ok).toBe(false)
   })
 })

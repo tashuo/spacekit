@@ -195,4 +195,6 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.xml-format': { zh: 'XML 格式化', en: 'XML Format' },
   'tool.xml-minify': { zh: 'XML 压缩', en: 'XML Minify' },
   'tool.yaml-format': { zh: 'YAML 格式化', en: 'YAML Format' },
+  'tool.json5-format': { zh: 'JSON5 格式化', en: 'JSON5 Format' },
+  'tool.toml-format': { zh: 'TOML 格式化', en: 'TOML Format' },
 }

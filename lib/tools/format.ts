@@ -4,6 +4,8 @@ import beautify from 'js-beautify'
 import { minify as cssoMinify } from 'csso'
 import xmlFormat from 'xml-formatter'
 import { parseDocument } from 'yaml'
+import JSON5 from 'json5'
+import { parse as tomlParse, stringify as tomlStringify } from 'smol-toml'
 
 // SQL 格式化：缩进 2 空格、关键字大写。dialect 取通用 'sql'。
 export function formatSql(input: string): ToolResult {
@@ -148,5 +150,25 @@ export function formatYaml(input: string): ToolResult {
     return ok(doc.toString({ indent: 2 }))
   } catch (e) {
     return err(e instanceof Error ? e.message : 'YAML 格式化失败')
+  }
+}
+
+// JSON5 格式化：解析后以 2 空格美化（输出仍为 JSON5：无引号键、单引号等按需保留）。
+export function formatJson5(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    return ok(JSON5.stringify(JSON5.parse(input), null, 2))
+  } catch (e) {
+    return err(e instanceof Error ? e.message : '非法 JSON5')
+  }
+}
+
+// TOML 格式化：解析后重新序列化（规范化缩进/表结构）。
+export function formatToml(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    return ok(tomlStringify(tomlParse(input)))
+  } catch (e) {
+    return err(e instanceof Error ? e.message : '非法 TOML')
   }
 }

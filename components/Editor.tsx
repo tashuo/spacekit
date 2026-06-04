@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { EditorView, basicSetup } from 'codemirror'
 import { EditorState, Compartment, type Extension } from '@codemirror/state'
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { HighlightStyle, syntaxHighlighting, StreamLanguage } from '@codemirror/language'
 import { tags as t } from '@lezer/highlight'
 import type { EditorLang } from '@/lib/tools/types'
 
@@ -16,6 +16,10 @@ const LANG_LOADERS: Record<EditorLang, (() => Promise<Extension>) | null> = {
   javascript: () => import('@codemirror/lang-javascript').then((m) => m.javascript()),
   xml: () => import('@codemirror/lang-xml').then((m) => m.xml()),
   yaml: () => import('@codemirror/lang-yaml').then((m) => m.yaml()),
+  // JSON5 语法接近 JS 对象字面量（含注释/单引号/无引号键），复用 JS 解析器着色
+  json5: () => import('@codemirror/lang-javascript').then((m) => m.javascript()),
+  // TOML 无官方包，用 legacy-modes 的 StreamParser
+  toml: () => import('@codemirror/legacy-modes/mode/toml').then((m) => StreamLanguage.define(m.toml)),
 }
 
 // 主题用 CSS 变量取色（定义在 tailwind.css 的 :root / .dark），
