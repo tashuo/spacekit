@@ -13,6 +13,11 @@ describe('registry', () => {
     expect(searchTools('base64').some((t) => t.id === 'base64-encode')).toBe(true)
     expect(searchTools('格式化').some((t) => t.id === 'json-format')).toBe(true)
   })
+  it('searchTools matches English tool names', () => {
+    expect(searchTools('format').some((t) => t.id === 'json-format')).toBe(true)
+    expect(searchTools('uppercase').some((t) => t.id === 'text-upper')).toBe(true)
+    expect(searchTools('struct').some((t) => t.id === 'json-to-go')).toBe(true)
+  })
   it('io tools run end-to-end', () => {
     expect(findTool('json-format')!.run!('{"a":1}').output).toBe('{\n  "a": 1\n}')
   })

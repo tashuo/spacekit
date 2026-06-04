@@ -1,4 +1,5 @@
 import type { ToolDef } from './types'
+import { MESSAGES } from '@/lib/i18n/messages'
 import { formatJson, minifyJson, escapeJson, unescapeJson } from './json'
 import { encodeBase64, decodeBase64, encodeUrl, decodeUrl, encodeUnicode, decodeUnicode } from './codec'
 import { decodeJwt } from './jwt'
@@ -56,9 +57,16 @@ export function findTool(id: string): ToolDef | undefined {
 export function searchTools(query: string): ToolDef[] {
   const q = query.trim().toLowerCase()
   if (!q) return TOOLS
-  return TOOLS.filter(
-    (t) => t.name.toLowerCase().includes(q) || t.keywords.some((k) => k.toLowerCase().includes(q)),
-  )
+  // 同时匹配中文名（t.name）、英文名（字典）与 keywords，
+  // 无论界面语言中英工具名均可搜到；两种名都参与匹配，故不依赖当前语言。
+  return TOOLS.filter((t) => {
+    const enName = MESSAGES[`tool.${t.id}`]?.en ?? ''
+    return (
+      t.name.toLowerCase().includes(q) ||
+      enName.toLowerCase().includes(q) ||
+      t.keywords.some((k) => k.toLowerCase().includes(q))
+    )
+  })
 }
 
 // 浮层暴露的工具子集（驱动右键菜单与浮层动作，声明式）
