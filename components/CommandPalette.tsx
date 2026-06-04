@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { TOOLS, searchTools, findTool } from '@/lib/tools/registry'
 import { CAT_LABEL } from '@/lib/tools/categories'
 import { usePrefs } from '@/lib/store/prefs'
-import { SearchIcon, StarIcon, StarFilledIcon, ClockIcon, LayersIcon, ReturnIcon } from '@/components/icons'
+import { SearchIcon, StarIcon, StarFilledIcon, ClockIcon, ReturnIcon } from '@/components/icons'
 import type { ToolCategory, ToolDef } from '@/lib/tools/types'
 
 // 分类色点：在极简列表里快速区分工具类别（替代每项一个图标）
@@ -19,7 +19,8 @@ type IconCmp = (p: { className?: string }) => React.ReactElement
 interface Group {
   key: string
   label: string
-  Icon: IconCmp
+  Icon?: IconCmp
+  dot?: string // 分类组用色点替代图标
   tools: ToolDef[]
 }
 
@@ -54,7 +55,11 @@ export function CommandPalette({
     const out: Group[] = []
     if (favs.length) out.push({ key: 'fav', label: '收藏', Icon: StarFilledIcon, tools: favs })
     if (recents.length) out.push({ key: 'recent', label: '最近', Icon: ClockIcon, tools: recents })
-    out.push({ key: 'all', label: '全部工具', Icon: LayersIcon, tools: all })
+    // 「全部」按分类聚合（分类顺序取自 CAT_LABEL 的定义顺序）
+    for (const cat of Object.keys(CAT_LABEL) as ToolCategory[]) {
+      const tools = all.filter((t) => t.category === cat)
+      if (tools.length) out.push({ key: cat, label: CAT_LABEL[cat], dot: CAT_DOT[cat], tools })
+    }
     return out
   }, [query, favoriteToolIds, recentToolIds])
 
@@ -129,7 +134,11 @@ export function CommandPalette({
           groups.map((g) => (
             <div key={g.key} className="mb-1">
               <div className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                <g.Icon className="h-3 w-3" />
+                {g.Icon ? (
+                  <g.Icon className="h-3 w-3" />
+                ) : g.dot ? (
+                  <span className={`h-1.5 w-1.5 rounded-full ${g.dot}`} />
+                ) : null}
                 {g.label}
               </div>
               {g.tools.map((t) => {
