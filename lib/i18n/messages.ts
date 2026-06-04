@@ -1,0 +1,151 @@
+// 自建轻量 i18n 字典。key → { zh, en }。
+// 工具名用 tool.<id>，分类用 cat.<category>，其余为 UI 文案。
+export type Lang = 'zh' | 'en'
+export type LangPref = 'system' | 'zh' | 'en'
+
+export const MESSAGES: Record<string, Record<Lang, string>> = {
+  // 品牌 / 顶栏
+  'app.tagline': { zh: '本地处理 · 零网络', en: 'Local-first · Zero network' },
+  'nav.tools': { zh: '工具', en: 'Tools' },
+  'nav.back': { zh: '返回工具列表', en: 'Back to tools' },
+  'nav.search': { zh: '搜索', en: 'Search' },
+
+  // 主题
+  'theme.system': { zh: '跟随系统', en: 'System' },
+  'theme.light': { zh: '浅色', en: 'Light' },
+  'theme.dark': { zh: '深色', en: 'Dark' },
+
+  // 语言
+  'lang.label': { zh: '语言', en: 'Language' },
+  'lang.zh': { zh: '中文', en: '中文' },
+  'lang.en': { zh: 'English', en: 'English' },
+
+  // 收藏
+  'fav.add': { zh: '收藏', en: 'Add favorite' },
+  'fav.remove': { zh: '取消收藏', en: 'Remove favorite' },
+
+  // 命令面板
+  'palette.placeholder': { zh: '搜索工具…', en: 'Search tools…' },
+  'palette.clear': { zh: '清除', en: 'Clear' },
+  'palette.empty': { zh: '未找到匹配工具', en: 'No matching tools' },
+  'group.fav': { zh: '收藏', en: 'Favorites' },
+  'group.recent': { zh: '最近', en: 'Recent' },
+  'group.results': { zh: '结果', en: 'Results' },
+  'hint.select': { zh: '选择', en: 'Select' },
+  'hint.open': { zh: '打开', en: 'Open' },
+  'hint.favorite': { zh: '收藏', en: 'Favorite' },
+  'hint.close': { zh: '关闭', en: 'Close' },
+
+  // 分类
+  'cat.json': { zh: 'JSON', en: 'JSON' },
+  'cat.convert': { zh: '转换', en: 'Convert' },
+  'cat.codec': { zh: '编解码', en: 'Codec' },
+  'cat.timestamp': { zh: '时间戳', en: 'Timestamp' },
+  'cat.crypto': { zh: '加解密', en: 'Crypto' },
+  'cat.text': { zh: '文本', en: 'Text' },
+
+  // io 面板通用
+  'pane.input': { zh: '输入', en: 'Input' },
+  'pane.output': { zh: '输出', en: 'Output' },
+  'action.clear': { zh: '清空', en: 'Clear' },
+  'action.copy': { zh: '复制', en: 'Copy' },
+  'action.copied': { zh: '已复制', en: 'Copied' },
+  'status.autoConvert': { zh: '输入内容后自动转换', en: 'Auto-converts as you type' },
+  'status.valid': { zh: '有效', en: 'Valid' },
+  'status.chars': { zh: '{n} 字符', en: '{n} chars' },
+  'status.lineCol': { zh: '第 {line} 行 {col} 列', en: 'line {line}, col {col}' },
+
+  // Diff
+  'diff.canonicalize': { zh: '规范化对比', en: 'Canonicalize' },
+  'diff.hint': {
+    zh: '在左右两侧粘贴 JSON，差异会自动高亮；点「规范化对比」可忽略 key 顺序',
+    en: 'Paste JSON on both sides — differences highlight automatically; “Canonicalize” ignores key order',
+  },
+  'diff.done': { zh: '已规范化两侧（按 key 排序）', en: 'Both sides canonicalized (keys sorted)' },
+
+  // Regex
+  'regex.flag.g': { zh: '全局 g', en: 'global g' },
+  'regex.flag.i': { zh: '忽略大小写 i', en: 'ignore case i' },
+  'regex.flag.m': { zh: '多行 m', en: 'multiline m' },
+  'regex.flag.s': { zh: '点匹配换行 s', en: 'dotall s' },
+  'regex.pattern': { zh: '正则表达式', en: 'Regular expression' },
+  'regex.testText': { zh: '测试文本', en: 'Test string' },
+  'regex.matches': { zh: '{n} 个匹配', en: '{n} matches' },
+  'regex.groups': { zh: '组', en: 'groups' },
+
+  // Query (JSONPath)
+  'query.result': { zh: '结果', en: 'Result' },
+  'query.autoQuery': { zh: '输入 JSON 与表达式后自动查询', en: 'Queries automatically as you type' },
+  'query.done': { zh: '查询完成', en: 'Done' },
+
+  // Crypto
+  'crypto.encrypt': { zh: '加密', en: 'Encrypt' },
+  'crypto.decrypt': { zh: '解密', en: 'Decrypt' },
+  'crypto.key': { zh: '密钥', en: 'Key' },
+  'crypto.keyHint.passphrase': { zh: '密钥 / 密码短语', en: 'Key / passphrase' },
+  'crypto.keyHint.hex': { zh: '32 位十六进制密钥', en: '32-hex key' },
+  'crypto.plaintext': { zh: '明文', en: 'Plaintext' },
+  'crypto.ciphertext': { zh: '密文', en: 'Ciphertext' },
+  'crypto.autoEncrypt': { zh: '输入内容与密钥后自动加密', en: 'Encrypts automatically as you type' },
+  'crypto.autoDecrypt': { zh: '输入内容与密钥后自动解密', en: 'Decrypts automatically as you type' },
+  'crypto.done': { zh: '完成', en: 'Done' },
+
+  // QR
+  'qr.text': { zh: '文本 / 链接', en: 'Text / URL' },
+  'qr.textPlaceholder': { zh: '输入要编码的文本或链接', en: 'Enter text or a URL to encode' },
+  'qr.download': { zh: '下载 SVG', en: 'Download SVG' },
+  'qr.genHint': { zh: '输入文本后生成二维码', en: 'Enter text to generate a QR code' },
+  'qr.dropHint': { zh: '选择或拖入一张二维码图片', en: 'Choose or drop a QR image' },
+  'qr.dropSub': { zh: '点击选择或拖拽图片到此', en: 'Click to select, or drag an image here' },
+  'qr.decoding': { zh: '识别中…', en: 'Decoding…' },
+  'qr.decoded': { zh: '识别成功', en: 'Decoded' },
+  'qr.noCode': { zh: '未识别到二维码', en: 'No QR code found' },
+  'qr.loadFail': { zh: '图片加载失败', en: 'Failed to load image' },
+  'qr.readFail': { zh: '无法读取图片', en: 'Cannot read image' },
+  'qr.result': { zh: '识别结果', en: 'Result' },
+
+  // 浮层 / 右键菜单
+  'overlay.close': { zh: '关闭', en: 'Close' },
+  'overlay.openApp': { zh: '在标签页打开 →', en: 'Open in tab →' },
+  'overlay.noOutput': { zh: '（无输出）', en: '(no output)' },
+  'overlay.fail': { zh: '处理失败', en: 'Failed' },
+  'ctx.parent': { zh: '用 SpaceKit 处理', en: 'Process with SpaceKit' },
+
+  // 工具名
+  'tool.json-format': { zh: 'JSON 格式化', en: 'JSON Format' },
+  'tool.json-minify': { zh: 'JSON 压缩', en: 'JSON Minify' },
+  'tool.json-escape': { zh: 'JSON 转义', en: 'JSON Escape' },
+  'tool.json-unescape': { zh: 'JSON 去转义', en: 'JSON Unescape' },
+  'tool.base64-encode': { zh: 'Base64 编码', en: 'Base64 Encode' },
+  'tool.base64-decode': { zh: 'Base64 解码', en: 'Base64 Decode' },
+  'tool.url-encode': { zh: 'URL 编码', en: 'URL Encode' },
+  'tool.url-decode': { zh: 'URL 解码', en: 'URL Decode' },
+  'tool.unicode-encode': { zh: 'Unicode 编码', en: 'Unicode Encode' },
+  'tool.unicode-decode': { zh: 'Unicode 解码', en: 'Unicode Decode' },
+  'tool.jwt-decode': { zh: 'JWT 解析', en: 'JWT Decode' },
+  'tool.ts-to-date': { zh: '时间戳转日期', en: 'Timestamp → Date' },
+  'tool.date-to-ts': { zh: '日期转时间戳', en: 'Date → Timestamp' },
+  'tool.md5': { zh: 'MD5', en: 'MD5' },
+  'tool.json-to-yaml': { zh: 'JSON 转 YAML', en: 'JSON → YAML' },
+  'tool.yaml-to-json': { zh: 'YAML 转 JSON', en: 'YAML → JSON' },
+  'tool.json-diff': { zh: 'JSON 对比', en: 'JSON Diff' },
+  'tool.regex-test': { zh: '正则测试', en: 'Regex Tester' },
+  'tool.text-dedup': { zh: '文本去重', en: 'Dedupe Lines' },
+  'tool.text-sort': { zh: '文本排序', en: 'Sort Lines' },
+  'tool.text-upper': { zh: '转大写', en: 'To Uppercase' },
+  'tool.text-lower': { zh: '转小写', en: 'To Lowercase' },
+  'tool.jsonpath-query': { zh: 'JSONPath 查询', en: 'JSONPath Query' },
+  'tool.json-to-xml': { zh: 'JSON 转 XML', en: 'JSON → XML' },
+  'tool.xml-to-json': { zh: 'XML 转 JSON', en: 'XML → JSON' },
+  'tool.json-to-csv': { zh: 'JSON 转 CSV', en: 'JSON → CSV' },
+  'tool.json-to-ts': { zh: 'JSON 转 TS 接口', en: 'JSON → TS Interface' },
+  'tool.json-to-go': { zh: 'JSON 转 Go 结构体', en: 'JSON → Go Struct' },
+  'tool.json-to-java': { zh: 'JSON 转 Java 类', en: 'JSON → Java Class' },
+  'tool.sm3': { zh: 'SM3', en: 'SM3' },
+  'tool.aes': { zh: 'AES 加解密', en: 'AES' },
+  'tool.des': { zh: 'DES 加解密', en: 'DES' },
+  'tool.triple-des': { zh: '3DES 加解密', en: '3DES' },
+  'tool.sm4': { zh: 'SM4 加解密（国密）', en: 'SM4' },
+  'tool.qr-generate': { zh: '二维码生成', en: 'QR Generate' },
+  'tool.qr-decode': { zh: '二维码解析', en: 'QR Decode' },
+}

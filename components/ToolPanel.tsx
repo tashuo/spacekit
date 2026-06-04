@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Editor } from './Editor'
 import { AlertIcon, CheckIcon, CopyIcon, TrashIcon } from '@/components/icons'
+import { useT } from '@/lib/i18n'
 import type { ToolDef } from '@/lib/tools/types'
 
 function PaneHeader({ label, children }: { label: string; children?: React.ReactNode }) {
@@ -13,6 +14,7 @@ function PaneHeader({ label, children }: { label: string; children?: React.React
 }
 
 export function ToolPanel({ tool }: { tool: ToolDef }) {
+  const t = useT()
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -39,7 +41,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
       {/* 双栏 */}
       <div className="grid min-h-0 flex-1 grid-cols-2">
         <div className="flex min-w-0 flex-col border-r border-zinc-200 dark:border-zinc-800">
-          <PaneHeader label="输入">
+          <PaneHeader label={t('pane.input')}>
             <button
               type="button"
               onClick={() => setInput('')}
@@ -47,7 +49,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-zinc-500 transition-colors hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-zinc-400 dark:hover:text-rose-400"
             >
               <TrashIcon className="h-3.5 w-3.5" />
-              清空
+              {t('action.clear')}
             </button>
           </PaneHeader>
           <div className="min-h-0 flex-1">
@@ -55,7 +57,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
           </div>
         </div>
         <div className="flex min-w-0 flex-col">
-          <PaneHeader label="输出">
+          <PaneHeader label={t('pane.output')}>
             <button
               type="button"
               onClick={copy}
@@ -67,7 +69,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
               }`}
             >
               {copied ? <CheckIcon className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
-              {copied ? '已复制' : '复制'}
+              {copied ? t('action.copied') : t('action.copy')}
             </button>
           </PaneHeader>
           <div className="min-h-0 flex-1">
@@ -79,12 +81,12 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
       {/* 状态栏 */}
       <div aria-live="polite" className="flex h-9 shrink-0 items-center border-t border-zinc-200 px-4 text-xs dark:border-zinc-800">
         {!hasInput ? (
-          <span className="text-zinc-400">输入内容后自动转换</span>
+          <span className="text-zinc-400">{t('status.autoConvert')}</span>
         ) : result.ok ? (
           <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
             <CheckIcon className="h-3.5 w-3.5" />
-            有效
-            <span className="text-zinc-400">· {result.output.length} 字符</span>
+            {t('status.valid')}
+            <span className="text-zinc-400">· {t('status.chars', { n: result.output.length })}</span>
           </span>
         ) : (
           <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
@@ -92,7 +94,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
             {result.error?.message}
             {result.error?.line ? (
               <span className="text-zinc-400">
-                · 第 {result.error.line} 行 {result.error.column} 列
+                · {t('status.lineCol', { line: result.error.line, col: result.error.column ?? 0 })}
               </span>
             ) : null}
           </span>

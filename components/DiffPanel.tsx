@@ -3,9 +3,11 @@ import { MergeView } from '@codemirror/merge'
 import { EditorView, basicSetup } from 'codemirror'
 import { json } from '@codemirror/lang-json'
 import { canonicalizeJson } from '@/lib/tools/diff'
+import { useT } from '@/lib/i18n'
 import type { ToolDef } from '@/lib/tools/types'
 
 export function DiffPanel({ tool }: { tool: ToolDef }) {
+  const t = useT()
   const host = useRef<HTMLDivElement>(null)
   const mv = useRef<MergeView | null>(null)
   const [msg, setMsg] = useState('')
@@ -37,7 +39,7 @@ export function DiffPanel({ tool }: { tool: ToolDef }) {
         problem = r.error?.message ?? '非法 JSON'
       }
     }
-    setMsg(problem ? `✗ ${problem}` : '✓ 已规范化两侧（按 key 排序）')
+    setMsg(problem ? `✗ ${problem}` : `✓ ${t('diff.done')}`)
   }
 
   return (
@@ -48,12 +50,12 @@ export function DiffPanel({ tool }: { tool: ToolDef }) {
           onClick={canonicalizeBoth}
           className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
         >
-          规范化对比
+          {t('diff.canonicalize')}
         </button>
       </div>
       <div ref={host} className="min-h-0 flex-1 overflow-auto text-sm [&_.cm-mergeView]:h-full [&_.cm-mergeViewEditors]:h-full" />
       <div className="flex h-9 shrink-0 items-center border-t border-zinc-200 px-4 text-xs text-zinc-400 dark:border-zinc-800">
-        {msg || '在左右两侧粘贴 JSON，差异会自动高亮；点「规范化对比」可忽略 key 顺序'}
+        {msg || t('diff.hint')}
       </div>
     </section>
   )

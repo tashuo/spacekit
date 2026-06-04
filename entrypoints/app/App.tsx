@@ -7,12 +7,14 @@ import { QueryPanel } from '@/components/QueryPanel'
 import { CryptoPanel } from '@/components/CryptoPanel'
 import { QrPanel } from '@/components/QrPanel'
 import { findTool } from '@/lib/tools/registry'
-import { CAT_LABEL } from '@/lib/tools/categories'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
+import { useT } from '@/lib/i18n'
+import type { LangPref } from '@/lib/i18n'
 import {
   ArrowLeftIcon,
   BracesIcon,
   CommandIcon,
+  GlobeIcon,
   MonitorIcon,
   MoonIcon,
   StarFilledIcon,
@@ -43,21 +45,21 @@ function applyTheme(theme: Theme) {
   document.documentElement.classList.toggle('dark', dark)
 }
 
-const THEME_OPTIONS: { value: Theme; label: string; Icon: typeof SunIcon }[] = [
-  { value: 'system', label: '跟随系统', Icon: MonitorIcon },
-  { value: 'light', label: '浅色', Icon: SunIcon },
-  { value: 'dark', label: '深色', Icon: MoonIcon },
-]
-
 function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) => void }) {
+  const t = useT()
+  const THEME_OPTIONS: { value: Theme; Icon: typeof SunIcon; key: string }[] = [
+    { value: 'system', key: 'theme.system', Icon: MonitorIcon },
+    { value: 'light', key: 'theme.light', Icon: SunIcon },
+    { value: 'dark', key: 'theme.dark', Icon: MoonIcon },
+  ]
   return (
     <div className="flex items-center gap-0.5 rounded-lg border border-zinc-200 bg-zinc-100 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
-      {THEME_OPTIONS.map(({ value, label, Icon }) => (
+      {THEME_OPTIONS.map(({ value, key, Icon }) => (
         <button
           key={value}
           type="button"
-          title={label}
-          aria-label={label}
+          title={t(key)}
+          aria-label={t(key)}
           aria-pressed={theme === value}
           onClick={() => onChange(value)}
           className={`grid h-7 w-7 cursor-pointer place-items-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
@@ -73,7 +75,39 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
   )
 }
 
+const LANG_OPTIONS: { value: LangPref; label: string }[] = [
+  { value: 'system', label: '自动' },
+  { value: 'zh', label: '中' },
+  { value: 'en', label: 'EN' },
+]
+
+function LangToggle() {
+  const lang = usePrefs((s) => s.lang)
+  const setLang = usePrefs((s) => s.setLang)
+  return (
+    <div className="flex items-center gap-0.5 rounded-lg border border-zinc-200 bg-zinc-100 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
+      <GlobeIcon className="mx-1 h-3.5 w-3.5 text-zinc-400" />
+      {LANG_OPTIONS.map(({ value, label }) => (
+        <button
+          key={value}
+          type="button"
+          aria-pressed={lang === value}
+          onClick={() => setLang(value)}
+          className={`cursor-pointer rounded-md px-2 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
+            lang === value
+              ? 'bg-white text-teal-600 shadow-sm dark:bg-zinc-950 dark:text-teal-400'
+              : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 function Brand() {
+  const t = useT()
   return (
     <div className="flex items-center gap-2.5">
       <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-sm">
@@ -81,13 +115,14 @@ function Brand() {
       </div>
       <div className="leading-none">
         <div className="font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">SpaceKit</div>
-        <div className="mt-1 font-mono text-[11px] text-zinc-400">本地处理 · 零网络</div>
+        <div className="mt-1 font-mono text-[11px] text-zinc-400">{t('app.tagline')}</div>
       </div>
     </div>
   )
 }
 
 export function App() {
+  const t = useT()
   const theme = usePrefs((s) => s.theme)
   const setTheme = usePrefs((s) => s.setTheme)
   const hydrate = usePrefs((s) => s.hydrate)
@@ -134,6 +169,7 @@ export function App() {
         <div className="flex items-center gap-3 px-5 py-4">
           <Brand />
           <div className="flex-1" />
+          <LangToggle />
           <ThemeToggle theme={theme} onChange={setTheme} />
         </div>
         <div className="flex min-h-0 flex-1 justify-center px-5 pb-16">
@@ -153,23 +189,23 @@ export function App() {
         <button
           type="button"
           onClick={() => setActiveToolId(null)}
-          aria-label="返回工具列表"
+          aria-label={t('nav.back')}
           className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
         >
           <ArrowLeftIcon className="h-4 w-4" />
-          工具
+          {t('nav.tools')}
         </button>
         <div className="mx-1 h-5 w-px bg-zinc-200 dark:bg-zinc-700" />
-        <h1 className="font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">{tool.name}</h1>
+        <h1 className="font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">{t(`tool.${tool.id}`)}</h1>
         <span className="rounded-full bg-zinc-100 px-2 py-0.5 font-mono text-[11px] text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-          {CAT_LABEL[tool.category]}
+          {t(`cat.${tool.category}`)}
         </span>
         <button
           type="button"
           onClick={() => toggleFavorite(tool.id)}
-          aria-label={fav ? '取消收藏' : '收藏'}
+          aria-label={fav ? t('fav.remove') : t('fav.add')}
           aria-pressed={fav}
-          title="收藏 (⌘D)"
+          title={fav ? t('fav.remove') : t('fav.add')}
           className={`cursor-pointer rounded-md p-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
             fav ? 'text-amber-400' : 'text-zinc-400 hover:text-amber-400'
           }`}
@@ -184,8 +220,9 @@ export function App() {
         >
           <CommandIcon className="h-3.5 w-3.5" />
           K
-          <span className="text-zinc-400">搜索</span>
+          <span className="text-zinc-400">{t('nav.search')}</span>
         </button>
+        <LangToggle />
         <ThemeToggle theme={theme} onChange={setTheme} />
       </header>
 

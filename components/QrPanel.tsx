@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import jsQR from 'jsqr'
 import { generateQrSvg } from '@/lib/tools/qr'
 import { CopyIcon } from '@/components/icons'
+import { useT } from '@/lib/i18n'
 import type { ToolDef } from '@/lib/tools/types'
 
 function Generate() {
+  const t = useT()
   const [text, setText] = useState('')
   const [svg, setSvg] = useState('')
   const [error, setError] = useState('')
@@ -45,13 +47,13 @@ function Generate() {
     <div className="grid min-h-0 flex-1 grid-cols-2">
       <div className="flex min-w-0 flex-col border-r border-zinc-200 p-4 dark:border-zinc-800">
         <label htmlFor="qr-text" className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-          文本 / 链接
+          {t('qr.text')}
         </label>
         <textarea
           id="qr-text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="输入要编码的文本或链接"
+          placeholder={t('qr.textPlaceholder')}
           spellCheck={false}
           className="min-h-0 flex-1 resize-none rounded-md border border-zinc-200 bg-zinc-50 p-3 font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
         />
@@ -69,11 +71,11 @@ function Generate() {
               onClick={download}
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
-              下载 SVG
+              {t('qr.download')}
             </button>
           </>
         ) : (
-          <span className="text-sm text-rose-500">{error || <span className="text-zinc-400">输入文本后生成二维码</span>}</span>
+          <span className="text-sm text-rose-500">{error || <span className="text-zinc-400">{t('qr.genHint')}</span>}</span>
         )}
       </div>
     </div>
@@ -81,14 +83,15 @@ function Generate() {
 }
 
 function Decode() {
+  const t = useT()
   const [result, setResult] = useState('')
-  const [status, setStatus] = useState('选择或拖入一张二维码图片')
+  const [status, setStatus] = useState<string>('')
   const [copied, setCopied] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   function handleFile(file: File | undefined) {
     if (!file) return
-    setStatus('识别中…')
+    setStatus(t('qr.decoding'))
     const url = URL.createObjectURL(file)
     const img = new Image()
     img.onload = () => {
@@ -97,7 +100,7 @@ function Decode() {
       if (!canvas) return
       const ctx = canvas.getContext('2d')
       if (!ctx) {
-        setStatus('无法读取图片')
+        setStatus(t('qr.readFail'))
         return
       }
       // 限制最大边，避免超大图片占用过多内存 / 卡顿
@@ -110,15 +113,15 @@ function Decode() {
       const code = jsQR(data.data, data.width, data.height)
       if (code) {
         setResult(code.data)
-        setStatus('识别成功')
+        setStatus(t('qr.decoded'))
       } else {
         setResult('')
-        setStatus('未识别到二维码')
+        setStatus(t('qr.noCode'))
       }
     }
     img.onerror = () => {
       URL.revokeObjectURL(url)
-      setStatus('图片加载失败')
+      setStatus(t('qr.loadFail'))
     }
     img.src = url
   }
@@ -130,6 +133,8 @@ function Decode() {
     setTimeout(() => setCopied(false), 1500)
   }
 
+  const dropHint = status || t('qr.dropHint')
+
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 p-4">
       <label
@@ -140,8 +145,8 @@ function Decode() {
         }}
         className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-zinc-300 py-10 text-sm text-zinc-500 transition-colors hover:border-teal-500/60 hover:text-teal-600 dark:border-zinc-700"
       >
-        <span>{status}</span>
-        <span className="text-xs text-zinc-400">点击选择或拖拽图片到此</span>
+        <span>{dropHint}</span>
+        <span className="text-xs text-zinc-400">{t('qr.dropSub')}</span>
         <input
           type="file"
           accept="image/*"
@@ -151,7 +156,7 @@ function Decode() {
       </label>
       <canvas ref={canvasRef} className="hidden" />
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">识别结果</span>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{t('qr.result')}</span>
         <button
           type="button"
           onClick={copy}
@@ -159,7 +164,7 @@ function Decode() {
           className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-zinc-500 transition-colors hover:text-teal-600 disabled:opacity-40 dark:text-zinc-400 dark:hover:text-teal-400"
         >
           <CopyIcon className="h-3.5 w-3.5" />
-          {copied ? '已复制' : '复制'}
+          {copied ? t('action.copied') : t('action.copy')}
         </button>
       </div>
       <pre aria-live="polite" className="min-h-0 flex-1 overflow-auto rounded-md border border-zinc-200 bg-zinc-50 p-3 font-mono text-sm whitespace-pre-wrap break-all dark:border-zinc-800 dark:bg-zinc-900">

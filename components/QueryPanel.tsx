@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Editor } from './Editor'
 import { queryJsonPath } from '@/lib/tools/jsonpath'
 import { AlertIcon, CheckIcon } from '@/components/icons'
+import { useT } from '@/lib/i18n'
 import type { ToolDef } from '@/lib/tools/types'
 
 function PaneHeader({ label }: { label: string }) {
@@ -13,6 +14,7 @@ function PaneHeader({ label }: { label: string }) {
 }
 
 export function QueryPanel({ tool }: { tool: ToolDef }) {
+  const t = useT()
   const [json, setJson] = useState('')
   const [path, setPath] = useState('$')
 
@@ -41,7 +43,7 @@ export function QueryPanel({ tool }: { tool: ToolDef }) {
           </div>
         </div>
         <div className="flex min-w-0 flex-col">
-          <PaneHeader label="结果" />
+          <PaneHeader label={t('query.result')} />
           <div className="min-h-0 flex-1">
             <Editor value={result.ok ? result.output : ''} readOnly language="json" />
           </div>
@@ -50,11 +52,11 @@ export function QueryPanel({ tool }: { tool: ToolDef }) {
 
       <div aria-live="polite" className="flex h-9 shrink-0 items-center border-t border-zinc-200 px-4 text-xs dark:border-zinc-800">
         {!hasJson ? (
-          <span className="text-zinc-400">输入 JSON 与表达式后自动查询</span>
+          <span className="text-zinc-400">{t('query.autoQuery')}</span>
         ) : result.ok ? (
           <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
             <CheckIcon className="h-3.5 w-3.5" />
-            查询完成
+            {t('query.done')}
           </span>
         ) : (
           <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400">

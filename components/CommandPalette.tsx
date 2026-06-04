@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { TOOLS, searchTools, findTool } from '@/lib/tools/registry'
-import { CAT_LABEL } from '@/lib/tools/categories'
 import { usePrefs } from '@/lib/store/prefs'
+import { useT } from '@/lib/i18n'
 import { SearchIcon, StarIcon, StarFilledIcon, ClockIcon, ReturnIcon } from '@/components/icons'
 import type { ToolCategory, ToolDef } from '@/lib/tools/types'
 
@@ -15,10 +15,13 @@ const CAT_DOT: Record<ToolCategory, string> = {
   text: 'bg-teal-400',
 }
 
+// All categories in display order (matches original CAT_LABEL key order)
+const CAT_KEYS: ToolCategory[] = ['json', 'convert', 'codec', 'timestamp', 'crypto', 'text']
+
 type IconCmp = (p: { className?: string }) => React.ReactElement
 interface Group {
   key: string
-  label: string
+  labelKey: string
   Icon?: IconCmp
   dot?: string // 分类组用色点替代图标
   tools: ToolDef[]
@@ -33,6 +36,7 @@ export function CommandPalette({
   onClose?: () => void
   autoFocus?: boolean
 }) {
+  const t = useT()
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
   const favoriteToolIds = usePrefs((s) => s.favoriteToolIds)
@@ -44,19 +48,19 @@ export function CommandPalette({
   // 无搜索时按 收藏 / 最近 / 全部 分组（去重）；有搜索时单一结果列表
   const groups = useMemo<Group[]>(() => {
     const q = query.trim()
-    if (q) return [{ key: 'results', label: '结果', Icon: SearchIcon, tools: searchTools(q) }]
+    if (q) return [{ key: 'results', labelKey: 'group.results', Icon: SearchIcon, tools: searchTools(q) }]
     const favs = favoriteToolIds.map((id) => findTool(id)).filter((t): t is ToolDef => !!t)
     const favSet = new Set(favs.map((t) => t.id))
     const recents = recentToolIds
       .map((id) => findTool(id))
       .filter((t): t is ToolDef => !!t && !favSet.has(t.id))
     const out: Group[] = []
-    if (favs.length) out.push({ key: 'fav', label: '收藏', Icon: StarFilledIcon, tools: favs })
-    if (recents.length) out.push({ key: 'recent', label: '最近', Icon: ClockIcon, tools: recents })
+    if (favs.length) out.push({ key: 'fav', labelKey: 'group.fav', Icon: StarFilledIcon, tools: favs })
+    if (recents.length) out.push({ key: 'recent', labelKey: 'group.recent', Icon: ClockIcon, tools: recents })
     // 各分类展示全量工具（与收藏/最近快捷区可重复出现）
-    for (const cat of Object.keys(CAT_LABEL) as ToolCategory[]) {
+    for (const cat of CAT_KEYS) {
       const tools = TOOLS.filter((t) => t.category === cat)
-      if (tools.length) out.push({ key: cat, label: CAT_LABEL[cat], dot: CAT_DOT[cat], tools })
+      if (tools.length) out.push({ key: cat, labelKey: `cat.${cat}`, dot: CAT_DOT[cat], tools })
     }
     return out
   }, [query, favoriteToolIds, recentToolIds])
@@ -85,15 +89,15 @@ export function CommandPalette({
       setActive((i) => Math.max(i - 1, 0))
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      const t = flatItems[active]?.tool
-      if (t) onSelect(t.id)
+      const tool = flatItems[active]?.tool
+      if (tool) onSelect(tool.id)
     } else if (e.key === 'Escape') {
       e.preventDefault()
       onClose?.()
     } else if ((e.metaKey || e.ctrlKey) && (e.key === 'd' || e.key === 'D')) {
       e.preventDefault()
-      const t = flatItems[active]?.tool
-      if (t) toggleFavorite(t.id)
+      const tool = flatItems[active]?.tool
+      if (tool) toggleFavorite(tool.id)
     }
   }
 
@@ -106,8 +110,8 @@ export function CommandPalette({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="搜索工具…"
-          aria-label="搜索工具"
+          placeholder={t('palette.placeholder')}
+          aria-label={t('palette.placeholder')}
           role="combobox"
           aria-expanded="true"
           aria-controls="ck-list"
@@ -120,14 +124,14 @@ export function CommandPalette({
             onClick={() => setQuery('')}
             className="cursor-pointer text-xs text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-200"
           >
-            清除
+            {t('palette.clear')}
           </button>
         )}
       </div>
 
       <div ref={listRef} id="ck-list" role="listbox" className="flex-1 overflow-auto p-2">
         {flatItems.length === 0 ? (
-          <div className="px-3 py-10 text-center text-sm text-zinc-400">未找到匹配工具</div>
+          <div className="px-3 py-10 text-center text-sm text-zinc-400">{t('palette.empty')}</div>
         ) : (
           positioned.map((g) => (
             <div key={g.key} className="mb-1">
@@ -137,38 +141,38 @@ export function CommandPalette({
                 ) : g.dot ? (
                   <span className={`h-1.5 w-1.5 rounded-full ${g.dot}`} />
                 ) : null}
-                {g.label}
+                {t(g.labelKey)}
               </div>
-              {g.items.map(({ tool: t, index }) => {
+              {g.items.map(({ tool: toolItem, index }) => {
                 const isActive = index === active
-                const fav = favoriteToolIds.includes(t.id)
+                const fav = favoriteToolIds.includes(toolItem.id)
                 return (
                   <div
-                    key={`${g.key}-${t.id}`}
+                    key={`${g.key}-${toolItem.id}`}
                     role="option"
                     aria-selected={isActive}
                     data-active={isActive}
-                    onClick={() => onSelect(t.id)}
+                    onClick={() => onSelect(toolItem.id)}
                     onMouseMove={() => setActive(index)}
                     className={`group flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors ${
                       isActive ? 'bg-teal-50 dark:bg-teal-500/10' : ''
                     }`}
                   >
-                    <span className={`h-2 w-2 shrink-0 rounded-full ${CAT_DOT[t.category]}`} />
+                    <span className={`h-2 w-2 shrink-0 rounded-full ${CAT_DOT[toolItem.category]}`} />
                     <span
                       className={`flex-1 truncate text-sm ${
                         isActive ? 'font-medium text-teal-700 dark:text-teal-300' : 'text-zinc-700 dark:text-zinc-200'
                       }`}
                     >
-                      {t.name}
+                      {t(`tool.${toolItem.id}`)}
                     </span>
-                    <span className="shrink-0 font-mono text-[10px] text-zinc-400">{CAT_LABEL[t.category]}</span>
+                    <span className="shrink-0 font-mono text-[10px] text-zinc-400">{t(`cat.${toolItem.category}`)}</span>
                     <button
                       type="button"
-                      aria-label={fav ? '取消收藏' : '收藏'}
+                      aria-label={fav ? t('fav.remove') : t('fav.add')}
                       onClick={(e) => {
                         e.stopPropagation()
-                        toggleFavorite(t.id)
+                        toggleFavorite(toolItem.id)
                       }}
                       className={`shrink-0 cursor-pointer rounded p-0.5 transition-colors ${
                         fav
@@ -188,11 +192,11 @@ export function CommandPalette({
       </div>
 
       <div className="flex items-center gap-3 border-t border-zinc-100 px-4 py-2 text-[11px] text-zinc-400 dark:border-zinc-800">
-        <Hint keys="↑↓" label="选择" />
-        <Hint keys="⏎" label="打开" />
-        <Hint keys="⌘D" label="收藏" />
+        <Hint keys="↑↓" label={t('hint.select')} />
+        <Hint keys="⏎" label={t('hint.open')} />
+        <Hint keys="⌘D" label={t('hint.favorite')} />
         <div className="flex-1" />
-        <Hint keys="esc" label="关闭" />
+        <Hint keys="esc" label={t('hint.close')} />
       </div>
     </div>
   )
