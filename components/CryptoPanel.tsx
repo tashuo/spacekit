@@ -62,7 +62,7 @@ export function CryptoPanel({ tool }: { tool: ToolDef }) {
           placeholder={keyHint}
           spellCheck={false}
           aria-label={t('crypto.key')}
-          className="flex-1 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
+          className="ck-input flex-1 px-3 py-1.5 font-mono text-sm"
         />
       </div>
 

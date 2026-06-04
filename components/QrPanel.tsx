@@ -56,7 +56,7 @@ function Generate() {
           onChange={(e) => setText(e.target.value)}
           placeholder={t('qr.textPlaceholder')}
           spellCheck={false}
-          className="min-h-0 flex-1 resize-none rounded-md border border-zinc-200 bg-zinc-50 p-3 font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
+          className="ck-input min-h-0 flex-1 resize-none p-3 font-mono text-sm"
         />
       </div>
       <div className="flex min-w-0 flex-col items-center justify-center gap-4 p-4">

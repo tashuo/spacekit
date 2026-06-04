@@ -32,7 +32,7 @@ export function RegexPanel({ tool }: { tool: ToolDef }) {
             onChange={(e) => setPattern(e.target.value)}
             placeholder={t('regex.pattern')}
             spellCheck={false}
-            className="flex-1 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
+            className="ck-input flex-1 px-3 py-1.5 font-mono text-sm"
           />
           <span className="font-mono text-zinc-400">/{flags}</span>
         </div>
@@ -49,7 +49,7 @@ export function RegexPanel({ tool }: { tool: ToolDef }) {
           onChange={(e) => setText(e.target.value)}
           placeholder={t('regex.testText')}
           spellCheck={false}
-          className="min-h-32 flex-1 resize-none rounded-md border border-zinc-200 bg-zinc-50 p-3 font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
+          className="ck-input min-h-32 flex-1 resize-none p-3 font-mono text-sm"
         />
         <div className="rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
           {!result.ok ? (

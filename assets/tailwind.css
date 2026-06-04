@@ -37,6 +37,17 @@
   --ck-keyword: #fda4af;
 }
 
+/* 统一的精致输入框：柔和聚焦光晕 + hover 边框反馈 + 平滑过渡（圆角/边框/底色由此类掌管，
+   尺寸与字体等版式工具按使用处单独叠加）。过渡在 prefers-reduced-motion 下自动失效（见文件末尾）。 */
+@utility ck-input {
+  @apply rounded-lg border border-zinc-200/90 bg-zinc-50/70 text-zinc-800 outline-none;
+  @apply transition-[border-color,box-shadow,background-color] duration-200 ease-out;
+  @apply placeholder:text-zinc-400 hover:border-zinc-300;
+  @apply focus:border-teal-500/70 focus:bg-white focus:shadow-[0_0_0_3px_rgba(13,148,136,0.14)];
+  @apply dark:border-zinc-700/80 dark:bg-zinc-900/50 dark:text-zinc-100 dark:hover:border-zinc-600;
+  @apply dark:focus:border-teal-400/70 dark:focus:bg-zinc-900 dark:focus:shadow-[0_0_0_3px_rgba(45,212,191,0.18)];
+}
+
 html,
 body,
 #root {

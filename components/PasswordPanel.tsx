@@ -188,7 +188,7 @@ export function PasswordPanel({ tool }: { tool: ToolDef }) {
                 onChange={(e) => setSeparator(e.target.value)}
                 maxLength={3}
                 aria-label={t('pw.separator')}
-                className="w-20 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 text-center font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
+                className="ck-input w-20 px-2 py-1 text-center font-mono text-sm"
               />
             </div>
             <div className="grid grid-cols-2 gap-2">
