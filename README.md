@@ -1,5 +1,11 @@
 # SpaceKit
 
+[![CI](https://github.com/tashuo/spacekit/actions/workflows/ci.yml/badge.svg)](https://github.com/tashuo/spacekit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Built with WXT](https://img.shields.io/badge/built%20with-WXT-67d4c1.svg)](https://wxt.dev/)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178c6.svg?logo=typescript&logoColor=white)
+![Chrome MV3](https://img.shields.io/badge/Chrome-MV3-4285F4.svg?logo=googlechrome&logoColor=white)
+
 > A local-first developer toolbox Chrome extension. Search-first, keyboard-first, dark-mode-first.
 
 SpaceKit puts 57 everyday developer utilities behind a single command palette — JSON, codec, JWT, timestamps, hashing, QR, a password generator, and a broad set of code/config formatters. Everything runs **purely locally**: zero network requests, zero data collection, no telemetry.
