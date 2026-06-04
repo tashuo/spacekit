@@ -175,8 +175,9 @@ function Decode() {
 }
 
 export function QrPanel({ tool }: { tool: ToolDef }) {
+  const t = useT()
   return (
-    <section aria-label={tool.name} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
+    <section aria-label={t(`tool.${tool.id}`)} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       {tool.id === 'qr-decode' ? <Decode /> : <Generate />}
     </section>
   )

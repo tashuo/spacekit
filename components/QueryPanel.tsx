@@ -22,7 +22,7 @@ export function QueryPanel({ tool }: { tool: ToolDef }) {
   const hasJson = json.trim().length > 0
 
   return (
-    <section aria-label={tool.name} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
+    <section aria-label={t(`tool.${tool.id}`)} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       <div className="flex h-11 shrink-0 items-center gap-2 border-b border-zinc-200 px-3 dark:border-zinc-800">
         <span className="shrink-0 font-mono text-xs text-zinc-400">JSONPath</span>
         <input
@@ -30,7 +30,7 @@ export function QueryPanel({ tool }: { tool: ToolDef }) {
           onChange={(e) => setPath(e.target.value)}
           placeholder="$.store.book[*].author"
           spellCheck={false}
-          aria-label="JSONPath 表达式"
+          aria-label={t('query.exprAria')}
           className="flex-1 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 font-mono text-sm outline-none focus:border-teal-500/50 dark:border-zinc-700 dark:bg-zinc-900"
         />
       </div>

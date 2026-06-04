@@ -23,7 +23,7 @@ export function RegexPanel({ tool }: { tool: ToolDef }) {
   }
 
   return (
-    <section aria-label={tool.name} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
+    <section aria-label={t(`tool.${tool.id}`)} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-4">
         <div className="flex items-center gap-2">
           <span className="font-mono text-zinc-400">/</span>

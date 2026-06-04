@@ -43,7 +43,7 @@ export function DiffPanel({ tool }: { tool: ToolDef }) {
   }
 
   return (
-    <section aria-label={tool.name} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
+    <section aria-label={t(`tool.${tool.id}`)} className="flex min-w-0 flex-1 flex-col bg-white dark:bg-zinc-950">
       <div className="flex h-9 shrink-0 items-center justify-end border-b border-zinc-200 px-3 dark:border-zinc-800">
         <button
           type="button"

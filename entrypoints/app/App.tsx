@@ -75,19 +75,19 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
   )
 }
 
-const LANG_OPTIONS: { value: LangPref; label: string }[] = [
-  { value: 'system', label: '自动' },
-  { value: 'zh', label: '中' },
-  { value: 'en', label: 'EN' },
-]
-
 function LangToggle() {
+  const t = useT()
   const lang = usePrefs((s) => s.lang)
   const setLang = usePrefs((s) => s.setLang)
+  const options: { value: LangPref; label: string }[] = [
+    { value: 'system', label: t('lang.auto') },
+    { value: 'zh', label: '中' },
+    { value: 'en', label: 'EN' },
+  ]
   return (
     <div className="flex items-center gap-0.5 rounded-lg border border-zinc-200 bg-zinc-100 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
       <GlobeIcon className="mx-1 h-3.5 w-3.5 text-zinc-400" />
-      {LANG_OPTIONS.map(({ value, label }) => (
+      {options.map(({ value, label }) => (
         <button
           key={value}
           type="button"

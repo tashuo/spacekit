@@ -19,6 +19,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'lang.label': { zh: '语言', en: 'Language' },
   'lang.zh': { zh: '中文', en: '中文' },
   'lang.en': { zh: 'English', en: 'English' },
+  'lang.auto': { zh: '自动', en: 'Auto' },
 
   // 收藏
   'fav.add': { zh: '收藏', en: 'Add favorite' },
@@ -75,6 +76,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
 
   // Query (JSONPath)
   'query.result': { zh: '结果', en: 'Result' },
+  'query.exprAria': { zh: 'JSONPath 表达式', en: 'JSONPath expression' },
   'query.autoQuery': { zh: '输入 JSON 与表达式后自动查询', en: 'Queries automatically as you type' },
   'query.done': { zh: '查询完成', en: 'Done' },
 
