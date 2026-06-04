@@ -28,6 +28,8 @@ SpaceKit is designed to never exfiltrate your data:
 - No analytics, no telemetry, no remote fonts.
 - Input content is never persisted, except the explicitly opt-in **History** feature (stored only in `chrome.storage.local`, capped, and clearable at any time). Cryptographic tools are excluded from history.
 
+See the full [Privacy Policy](./PRIVACY.md).
+
 ## Tools
 
 | Category | Tools |
