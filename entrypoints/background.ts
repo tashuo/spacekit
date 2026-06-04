@@ -1,4 +1,4 @@
-import { overlayTools } from '@/lib/tools/registry'
+import { overlayTools } from '@/lib/tools/overlay'
 import { t, resolveLang } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
 import type { BgMessage } from '@/lib/messaging'

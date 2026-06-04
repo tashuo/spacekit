@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Editor } from './Editor'
 import { AlertIcon, CheckIcon, CopyIcon, TrashIcon } from '@/components/icons'
 import { useT } from '@/lib/i18n'
 import { useHistory } from '@/lib/store/history'
-import type { ToolDef } from '@/lib/tools/types'
+import type { ToolDef, ToolResult } from '@/lib/tools/types'
 
 function PaneHeader({ label, children }: { label: string; children?: React.ReactNode }) {
   return (
@@ -19,6 +19,7 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
   const addHistory = useHistory((s) => s.add)
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)
+  const [result, setResult] = useState<ToolResult>({ ok: true, output: '' })
 
   // 切换工具时清空输入
   useEffect(() => {
@@ -26,8 +27,26 @@ export function ToolPanel({ tool }: { tool: ToolDef }) {
     setCopied(false)
   }, [tool.id])
 
-  // 实时转换：输入变化即出结果
-  const result = useMemo(() => (tool.run ? tool.run(input) : { ok: true, output: '' }), [tool, input])
+  // 实时转换：输入变化即出结果。run 可能是异步（动态加载的格式化工具），用 alive 防竞态。
+  useEffect(() => {
+    if (!tool.run) {
+      setResult({ ok: true, output: '' })
+      return
+    }
+    let alive = true
+    const r = tool.run(input)
+    if (r instanceof Promise) {
+      void r.then((res) => {
+        if (alive) setResult(res)
+      })
+    } else {
+      setResult(r)
+    }
+    return () => {
+      alive = false
+    }
+  }, [tool, input])
+
   const lang = tool.category === 'json' ? 'json' : 'text'
   const hasInput = input.trim().length > 0
 

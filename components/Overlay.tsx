@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { overlayTools } from '@/lib/tools/registry'
+import { overlayTools } from '@/lib/tools/overlay'
 import { useT } from '@/lib/i18n'
 import { usePrefs } from '@/lib/store/prefs'
 import type { OverlayMessage } from '@/lib/messaging'
+import type { ToolResult } from '@/lib/tools/types'
 
 const TOOLS = overlayTools()
 type Mode = 'hidden' | 'button' | 'panel'
@@ -22,7 +23,26 @@ export function Overlay() {
   }, [])
 
   const tool = TOOLS.find((t) => t.id === toolId)
-  const result = tool?.run ? tool.run(text) : { ok: true, output: '' }
+  const [result, setResult] = useState<ToolResult>({ ok: true, output: '' })
+  // 浮层仅暴露轻量同步工具，但 run 类型为同步|异步联合，统一兼容处理。
+  useEffect(() => {
+    if (!tool?.run) {
+      setResult({ ok: true, output: '' })
+      return
+    }
+    let alive = true
+    const r = tool.run(text)
+    if (r instanceof Promise) {
+      void r.then((res) => {
+        if (alive) setResult(res)
+      })
+    } else {
+      setResult(r)
+    }
+    return () => {
+      alive = false
+    }
+  }, [tool, text])
 
   // 鼠标抬起：若有选中文本且不在浮层内，显示选区按钮
   useEffect(() => {

@@ -13,10 +13,11 @@ const CAT_DOT: Record<ToolCategory, string> = {
   timestamp: 'bg-emerald-400',
   crypto: 'bg-rose-400',
   text: 'bg-teal-400',
+  format: 'bg-fuchsia-400',
 }
 
 // All categories in display order (matches original CAT_LABEL key order)
-const CAT_KEYS: ToolCategory[] = ['json', 'convert', 'codec', 'timestamp', 'crypto', 'text']
+const CAT_KEYS: ToolCategory[] = ['json', 'convert', 'format', 'codec', 'timestamp', 'crypto', 'text']
 
 type IconCmp = (p: { className?: string }) => React.ReactElement
 interface Group {

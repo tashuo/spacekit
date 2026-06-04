@@ -1,5 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { TOOLS, findTool, searchTools, overlayTools } from '@/lib/tools/registry'
+import { TOOLS, findTool, searchTools, overlayToolIds } from '@/lib/tools/registry'
+import { overlayTools } from '@/lib/tools/overlay'
+import type { ToolResult } from '@/lib/tools/types'
+
+// 运行同步工具并断言其非异步（异步的格式化工具不在此测）
+function runSync(id: string, input: string): ToolResult {
+  const r = findTool(id)!.run!(input)
+  if (r instanceof Promise) throw new Error(`${id} run is async`)
+  return r
+}
 
 describe('registry', () => {
   it('every tool has a unique id', () => {
@@ -23,11 +32,11 @@ describe('registry', () => {
     expect(findTool('password-generator')!.run).toBeUndefined()
   })
   it('io tools run end-to-end', () => {
-    expect(findTool('json-format')!.run!('{"a":1}').output).toBe('{\n  "a": 1\n}')
+    expect(runSync('json-format', '{"a":1}').output).toBe('{\n  "a": 1\n}')
   })
   it('registers batch-2 io tools that run', () => {
-    expect(findTool('json-to-yaml')!.run!('{"a":1}').output).toBe('a: 1\n')
-    expect(findTool('text-dedup')!.run!('a\na\nb').output).toBe('a\nb')
+    expect(runSync('json-to-yaml', '{"a":1}').output).toBe('a: 1\n')
+    expect(runSync('text-dedup', 'a\na\nb').output).toBe('a\nb')
   })
   it('registers diff/regex tools with the right layout and no run', () => {
     expect(findTool('json-diff')!.layout).toBe('diff')
@@ -39,11 +48,19 @@ describe('registry', () => {
     expect(searchTools('yaml').some((t) => t.id === 'json-to-yaml')).toBe(true)
     expect(searchTools('正则').some((t) => t.id === 'regex-test')).toBe(true)
   })
-  it('overlayTools returns only tools flagged inOverlay, all runnable io tools', () => {
+  it('overlay module exposes runnable tools and stays in sync with registry inOverlay flags', () => {
     const list = overlayTools()
     expect(list.length).toBeGreaterThan(0)
-    expect(list.every((t) => t.inOverlay === true)).toBe(true)
-    expect(list.every((t) => t.layout === 'io' && typeof t.run === 'function')).toBe(true)
+    expect(list.every((t) => typeof t.run === 'function')).toBe(true)
+    // 单一事实来源校验：overlay.ts 的 id 集合必须等于 registry 中 inOverlay 标记集合
+    expect(new Set(list.map((t) => t.id))).toEqual(new Set(overlayToolIds()))
+  })
+  it('every overlay tool id exists in the registry as a runnable io tool', () => {
+    for (const { id } of overlayTools()) {
+      const def = findTool(id)
+      expect(def?.layout).toBe('io')
+      expect(typeof def?.run).toBe('function')
+    }
   })
   it('overlay set covers the high-frequency decode/parse tools', () => {
     const ids = overlayTools().map((t) => t.id)
@@ -53,8 +70,8 @@ describe('registry', () => {
     expect(ids).toContain('ts-to-date')
   })
   it('registers batch-3a io tools that run', () => {
-    expect(findTool('json-to-csv')!.run!('[{"a":1}]').output).toBe('a\n1')
-    expect(findTool('json-to-ts')!.run!('{"a":1}').output).toContain('interface Root')
+    expect(runSync('json-to-csv', '[{"a":1}]').output).toBe('a\n1')
+    expect(runSync('json-to-ts', '{"a":1}').output).toContain('interface Root')
   })
   it('registers jsonpath-query with query layout and no run', () => {
     expect(findTool('jsonpath-query')!.layout).toBe('query')
@@ -79,5 +96,18 @@ describe('registry', () => {
       expect(findTool(id)!.layout).toBe('qrcode')
       expect(findTool(id)!.run).toBeUndefined()
     }
+  })
+  it('registers format tools that run asynchronously via dynamic import', async () => {
+    for (const id of ['sql-format', 'sql-minify', 'css-format', 'css-minify', 'html-format', 'js-format']) {
+      expect(findTool(id)!.category).toBe('format')
+    }
+    const r = findTool('sql-format')!.run!('select 1')
+    expect(r instanceof Promise).toBe(true)
+    expect((await r).output).toContain('SELECT')
+  })
+  it('search finds format tools by name and keyword', () => {
+    expect(searchTools('sql').some((t) => t.id === 'sql-format')).toBe(true)
+    expect(searchTools('minify').some((t) => t.id === 'css-minify')).toBe(true)
+    expect(searchTools('beautify').some((t) => t.id === 'js-format')).toBe(true)
   })
 })

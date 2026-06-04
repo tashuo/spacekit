@@ -44,6 +44,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'cat.timestamp': { zh: '时间戳', en: 'Timestamp' },
   'cat.crypto': { zh: '加解密', en: 'Crypto' },
   'cat.text': { zh: '文本', en: 'Text' },
+  'cat.format': { zh: '格式化', en: 'Format' },
 
   // io 面板通用
   'pane.input': { zh: '输入', en: 'Input' },
@@ -185,4 +186,10 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.qr-generate': { zh: '二维码生成', en: 'QR Generate' },
   'tool.qr-decode': { zh: '二维码解析', en: 'QR Decode' },
   'tool.password-generator': { zh: '密码生成器', en: 'Password Generator' },
+  'tool.sql-format': { zh: 'SQL 格式化', en: 'SQL Format' },
+  'tool.sql-minify': { zh: 'SQL 压缩', en: 'SQL Minify' },
+  'tool.css-format': { zh: 'CSS 格式化', en: 'CSS Format' },
+  'tool.css-minify': { zh: 'CSS 压缩', en: 'CSS Minify' },
+  'tool.html-format': { zh: 'HTML 格式化', en: 'HTML Format' },
+  'tool.js-format': { zh: 'JS 格式化', en: 'JS Format' },
 }
