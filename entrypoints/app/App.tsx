@@ -190,7 +190,7 @@ export function App() {
       </header>
 
       <main className="flex min-h-0 flex-1 flex-col">
-        <ToolView tool={tool} />
+        <ToolView key={tool.id} tool={tool} />
       </main>
 
       {paletteOpen && (

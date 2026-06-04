@@ -92,20 +92,22 @@ function Decode() {
     const url = URL.createObjectURL(file)
     const img = new Image()
     img.onload = () => {
+      URL.revokeObjectURL(url) // 图片已解码，URL 不再需要（统一在此释放）
       const canvas = canvasRef.current
       if (!canvas) return
-      canvas.width = img.width
-      canvas.height = img.height
       const ctx = canvas.getContext('2d')
       if (!ctx) {
         setStatus('无法读取图片')
-        URL.revokeObjectURL(url)
         return
       }
-      ctx.drawImage(img, 0, 0)
+      // 限制最大边，避免超大图片占用过多内存 / 卡顿
+      const MAX = 2000
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height))
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height)
       const code = jsQR(data.data, data.width, data.height)
-      URL.revokeObjectURL(url)
       if (code) {
         setResult(code.data)
         setStatus('识别成功')
@@ -115,8 +117,8 @@ function Decode() {
       }
     }
     img.onerror = () => {
-      setStatus('图片加载失败')
       URL.revokeObjectURL(url)
+      setStatus('图片加载失败')
     }
     img.src = url
   }
