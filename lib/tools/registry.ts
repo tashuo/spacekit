@@ -61,6 +61,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'yaml-format', category: 'format', name: 'YAML 格式化', keywords: ['yaml', 'yml', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'yaml', run: (i) => import('./format').then((m) => m.formatYaml(i)) },
   { id: 'json5-format', category: 'format', name: 'JSON5 格式化', keywords: ['json5', 'json', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'json5', run: (i) => import('./format').then((m) => m.formatJson5(i)) },
   { id: 'toml-format', category: 'format', name: 'TOML 格式化', keywords: ['toml', '格式化', '美化', 'beautify', 'config'], layout: 'io', editorLang: 'toml', run: (i) => import('./format').then((m) => m.formatToml(i)) },
+  { id: 'markdown-format', category: 'format', name: 'Markdown 格式化', keywords: ['markdown', 'md', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'markdown', run: (i) => import('./format').then((m) => m.formatMarkdown(i)) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

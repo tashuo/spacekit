@@ -20,6 +20,7 @@ const LANG_LOADERS: Record<EditorLang, (() => Promise<Extension>) | null> = {
   json5: () => import('@codemirror/lang-javascript').then((m) => m.javascript()),
   // TOML 无官方包，用 legacy-modes 的 StreamParser
   toml: () => import('@codemirror/legacy-modes/mode/toml').then((m) => StreamLanguage.define(m.toml)),
+  markdown: () => import('@codemirror/lang-markdown').then((m) => m.markdown()),
 }
 
 // 主题用 CSS 变量取色（定义在 tailwind.css 的 :root / .dark），

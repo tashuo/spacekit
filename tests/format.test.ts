@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml } from '@/lib/tools/format'
+import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown } from '@/lib/tools/format'
 
 describe('formatSql', () => {
   it('uppercases keywords and indents', () => {
@@ -161,5 +161,27 @@ describe('formatToml', () => {
   })
   it('errors on empty input', () => {
     expect(formatToml('').ok).toBe(false)
+  })
+})
+
+describe('formatMarkdown', () => {
+  it('normalizes heading and list markers', () => {
+    const r = formatMarkdown('#  Title\n\n*  item a\n*  item b')
+    expect(r.ok).toBe(true)
+    expect(r.output).toContain('# Title')
+    expect(r.output).toContain('* item a')
+  })
+  it('reformats GFM tables', () => {
+    const r = formatMarkdown('|a|b|\n|-|-|\n|1|2|')
+    expect(r.ok).toBe(true)
+    expect(r.output).toContain('| a | b |')
+    expect(r.output).toContain('| - | - |')
+  })
+  it('is idempotent', () => {
+    const once = formatMarkdown('# Title\n\ntext here').output
+    expect(formatMarkdown(once).output).toBe(once)
+  })
+  it('errors on empty input', () => {
+    expect(formatMarkdown('   ').ok).toBe(false)
   })
 })

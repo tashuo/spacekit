@@ -197,4 +197,5 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.yaml-format': { zh: 'YAML 格式化', en: 'YAML Format' },
   'tool.json5-format': { zh: 'JSON5 格式化', en: 'JSON5 Format' },
   'tool.toml-format': { zh: 'TOML 格式化', en: 'TOML Format' },
+  'tool.markdown-format': { zh: 'Markdown 格式化', en: 'Markdown Format' },
 }

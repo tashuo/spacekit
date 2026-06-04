@@ -6,6 +6,8 @@ import xmlFormat from 'xml-formatter'
 import { parseDocument } from 'yaml'
 import JSON5 from 'json5'
 import { parse as tomlParse, stringify as tomlStringify } from 'smol-toml'
+import { remark } from 'remark'
+import remarkGfm from 'remark-gfm'
 
 // SQL 格式化：缩进 2 空格、关键字大写。dialect 取通用 'sql'。
 export function formatSql(input: string): ToolResult {
@@ -170,5 +172,15 @@ export function formatToml(input: string): ToolResult {
     return ok(tomlStringify(tomlParse(input)))
   } catch (e) {
     return err(e instanceof Error ? e.message : '非法 TOML')
+  }
+}
+
+// Markdown 格式化：remark + GFM，规范化标题/列表/表格/强调等（processSync 同步）。
+export function formatMarkdown(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  try {
+    return ok(remark().use(remarkGfm).processSync(input).toString())
+  } catch (e) {
+    return err(e instanceof Error ? e.message : 'Markdown 格式化失败')
   }
 }

@@ -98,7 +98,7 @@ describe('registry', () => {
     }
   })
   it('registers format tools that run asynchronously via dynamic import', async () => {
-    for (const id of ['sql-format', 'sql-minify', 'css-format', 'css-minify', 'html-format', 'js-format', 'xml-format', 'xml-minify', 'yaml-format', 'json5-format', 'toml-format']) {
+    for (const id of ['sql-format', 'sql-minify', 'css-format', 'css-minify', 'html-format', 'js-format', 'xml-format', 'xml-minify', 'yaml-format', 'json5-format', 'toml-format', 'markdown-format']) {
       expect(findTool(id)!.category).toBe('format')
     }
     const r = findTool('sql-format')!.run!('select 1')
@@ -113,5 +113,6 @@ describe('registry', () => {
     expect(searchTools('yaml').some((t) => t.id === 'yaml-format')).toBe(true)
     expect(searchTools('json5').some((t) => t.id === 'json5-format')).toBe(true)
     expect(searchTools('toml').some((t) => t.id === 'toml-format')).toBe(true)
+    expect(searchTools('markdown').some((t) => t.id === 'markdown-format')).toBe(true)
   })
 })
