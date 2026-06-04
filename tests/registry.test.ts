@@ -65,4 +65,10 @@ describe('registry', () => {
       expect(findTool(id)!.run).toBeUndefined()
     }
   })
+  it('registers qr tools with qrcode layout and no run', () => {
+    for (const id of ['qr-generate', 'qr-decode']) {
+      expect(findTool(id)!.layout).toBe('qrcode')
+      expect(findTool(id)!.run).toBeUndefined()
+    }
+  })
 })

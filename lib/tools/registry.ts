@@ -45,6 +45,8 @@ export const TOOLS: ToolDef[] = [
   { id: 'des', category: 'crypto', name: 'DES 加解密', keywords: ['des', '加密', '解密', '对称'], layout: 'crypto' },
   { id: 'triple-des', category: 'crypto', name: '3DES 加解密', keywords: ['3des', 'tripledes', '加密', '解密'], layout: 'crypto' },
   { id: 'sm4', category: 'crypto', name: 'SM4 加解密（国密）', keywords: ['sm4', '国密', '加密', '解密'], layout: 'crypto' },
+  { id: 'qr-generate', category: 'text', name: '二维码生成', keywords: ['qr', '二维码', 'qrcode', '生成'], layout: 'qrcode' },
+  { id: 'qr-decode', category: 'text', name: '二维码解析', keywords: ['qr', '二维码', 'qrcode', '解析', '识别'], layout: 'qrcode' },
 ]
 
 export function findTool(id: string): ToolDef | undefined {
