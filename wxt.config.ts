@@ -14,11 +14,11 @@ export default defineConfig({
     commands: {
       'open-app': {
         suggested_key: { default: 'Alt+Shift+S' },
-        description: '打开 SpaceKit 标签页',
+        description: 'Open the SpaceKit tab',
       },
       'toggle-overlay': {
         suggested_key: { default: 'Alt+Shift+K' },
-        description: '对选中文本唤出 SpaceKit 浮层',
+        description: 'Show the SpaceKit overlay for the selected text',
       },
     },
   },
