@@ -55,4 +55,14 @@ describe('registry', () => {
     expect(searchTools('xml').some((t) => t.id === 'json-to-xml')).toBe(true)
     expect(searchTools('jsonpath').some((t) => t.id === 'jsonpath-query')).toBe(true)
   })
+  it('registers sm3 as an io tool', () => {
+    expect(findTool('sm3')!.layout).toBe('io')
+    expect(typeof findTool('sm3')!.run).toBe('function')
+  })
+  it('registers symmetric crypto tools with crypto layout and no run', () => {
+    for (const id of ['aes', 'des', 'triple-des', 'sm4']) {
+      expect(findTool(id)!.layout).toBe('crypto')
+      expect(findTool(id)!.run).toBeUndefined()
+    }
+  })
 })

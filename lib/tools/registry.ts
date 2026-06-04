@@ -3,7 +3,7 @@ import { formatJson, minifyJson, escapeJson, unescapeJson } from './json'
 import { encodeBase64, decodeBase64, encodeUrl, decodeUrl, encodeUnicode, decodeUnicode } from './codec'
 import { decodeJwt } from './jwt'
 import { tsToDate, dateToTs } from './timestamp'
-import { md5 } from './hash'
+import { md5, sm3 } from './hash'
 import { jsonToYaml, yamlToJson } from './convert'
 import { dedupLines, sortLines, toUpper, toLower } from './text'
 import { jsonToCsv } from './csv'
@@ -40,6 +40,11 @@ export const TOOLS: ToolDef[] = [
   { id: 'json-to-ts', category: 'convert', name: 'JSON 转 TS 接口', keywords: ['typescript', 'ts', 'interface', '实体类'], layout: 'io', run: (i) => jsonToTs(i) },
   { id: 'json-to-go', category: 'convert', name: 'JSON 转 Go 结构体', keywords: ['go', 'golang', 'struct', '实体类'], layout: 'io', run: (i) => jsonToGo(i) },
   { id: 'json-to-java', category: 'convert', name: 'JSON 转 Java 类', keywords: ['java', 'class', '实体类'], layout: 'io', run: (i) => jsonToJava(i) },
+  { id: 'sm3', category: 'crypto', name: 'SM3', keywords: ['sm3', '国密', 'hash', '哈希'], layout: 'io', run: (i) => sm3(i) },
+  { id: 'aes', category: 'crypto', name: 'AES 加解密', keywords: ['aes', '加密', '解密', '对称'], layout: 'crypto' },
+  { id: 'des', category: 'crypto', name: 'DES 加解密', keywords: ['des', '加密', '解密', '对称'], layout: 'crypto' },
+  { id: 'triple-des', category: 'crypto', name: '3DES 加解密', keywords: ['3des', 'tripledes', '加密', '解密'], layout: 'crypto' },
+  { id: 'sm4', category: 'crypto', name: 'SM4 加解密（国密）', keywords: ['sm4', '国密', '加密', '解密'], layout: 'crypto' },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

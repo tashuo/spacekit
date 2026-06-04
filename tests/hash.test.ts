@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { md5, sha } from '@/lib/tools/hash'
+import { md5, sha, sm3 } from '@/lib/tools/hash'
 
 describe('md5', () => {
   it('hashes empty string', () => {
@@ -16,5 +16,11 @@ describe('sha', () => {
     expect(r.output).toBe(
       'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
     )
+  })
+})
+
+describe('sm3', () => {
+  it('hashes abc to the known vector', () => {
+    expect(sm3('abc').output).toBe('66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a2297da02b8f4ba8e0')
   })
 })
