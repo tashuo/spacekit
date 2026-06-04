@@ -48,6 +48,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'sm4', category: 'crypto', name: 'SM4 加解密（国密）', keywords: ['sm4', '国密', '加密', '解密'], layout: 'crypto' },
   { id: 'qr-generate', category: 'text', name: '二维码生成', keywords: ['qr', '二维码', 'qrcode', '生成'], layout: 'qrcode' },
   { id: 'qr-decode', category: 'text', name: '二维码解析', keywords: ['qr', '二维码', 'qrcode', '解析', '识别'], layout: 'qrcode' },
+  { id: 'password-generator', category: 'crypto', name: '密码生成器', keywords: ['password', '密码', '随机', 'random', 'generate', 'pin'], layout: 'password' },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

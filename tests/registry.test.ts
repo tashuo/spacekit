@@ -18,6 +18,10 @@ describe('registry', () => {
     expect(searchTools('uppercase').some((t) => t.id === 'text-upper')).toBe(true)
     expect(searchTools('struct').some((t) => t.id === 'json-to-go')).toBe(true)
   })
+  it('registers password-generator with password layout and no run', () => {
+    expect(findTool('password-generator')!.layout).toBe('password')
+    expect(findTool('password-generator')!.run).toBeUndefined()
+  })
   it('io tools run end-to-end', () => {
     expect(findTool('json-format')!.run!('{"a":1}').output).toBe('{\n  "a": 1\n}')
   })

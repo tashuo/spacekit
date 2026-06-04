@@ -113,6 +113,28 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'overlay.fail': { zh: '处理失败', en: 'Failed' },
   'ctx.parent': { zh: '用 SpaceKit 处理', en: 'Process with SpaceKit' },
 
+  // 密码生成器
+  'pw.type.random': { zh: '随机', en: 'Random' },
+  'pw.type.memorable': { zh: '易记', en: 'Memorable' },
+  'pw.type.pin': { zh: 'PIN', en: 'PIN' },
+  'pw.length': { zh: '长度', en: 'Length' },
+  'pw.lower': { zh: '小写 a-z', en: 'Lowercase a-z' },
+  'pw.upper': { zh: '大写 A-Z', en: 'Uppercase A-Z' },
+  'pw.digits': { zh: '数字 0-9', en: 'Digits 0-9' },
+  'pw.symbols': { zh: '符号', en: 'Symbols' },
+  'pw.avoidAmbiguous': { zh: '排除易混字符', en: 'Avoid ambiguous' },
+  'pw.words': { zh: '单词数', en: 'Words' },
+  'pw.separator': { zh: '分隔符', en: 'Separator' },
+  'pw.capitalize': { zh: '首字母大写', en: 'Capitalize' },
+  'pw.includeNumber': { zh: '包含数字', en: 'Include number' },
+  'pw.regenerate': { zh: '重新生成', en: 'Regenerate' },
+  'pw.empty': { zh: '至少选择一种字符类型', en: 'Select at least one character type' },
+  'pw.strength': { zh: '强度', en: 'Strength' },
+  'pw.strength.weak': { zh: '弱', en: 'Weak' },
+  'pw.strength.fair': { zh: '中', en: 'Fair' },
+  'pw.strength.strong': { zh: '强', en: 'Strong' },
+  'pw.strength.excellent': { zh: '极强', en: 'Excellent' },
+
   // 工具名
   'tool.json-format': { zh: 'JSON 格式化', en: 'JSON Format' },
   'tool.json-minify': { zh: 'JSON 压缩', en: 'JSON Minify' },
@@ -150,4 +172,5 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.sm4': { zh: 'SM4 加解密（国密）', en: 'SM4' },
   'tool.qr-generate': { zh: '二维码生成', en: 'QR Generate' },
   'tool.qr-decode': { zh: '二维码解析', en: 'QR Decode' },
+  'tool.password-generator': { zh: '密码生成器', en: 'Password Generator' },
 }
