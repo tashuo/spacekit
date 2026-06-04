@@ -64,6 +64,8 @@ export const TOOLS: ToolDef[] = [
   { id: 'markdown-format', category: 'format', name: 'Markdown 格式化', keywords: ['markdown', 'md', '格式化', '美化', 'beautify'], layout: 'io', editorLang: 'markdown', run: (i) => import('./format').then((m) => m.formatMarkdown(i)) },
   { id: 'ini-format', category: 'format', name: 'INI 格式化', keywords: ['ini', 'config', '配置', '格式化', '美化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatIni(i)) },
   { id: 'properties-format', category: 'format', name: 'Properties 格式化', keywords: ['properties', 'java', 'config', '配置', '格式化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatProperties(i)) },
+  { id: 'dockerfile-format', category: 'format', name: 'Dockerfile 格式化', keywords: ['dockerfile', 'docker', '格式化', '美化'], layout: 'io', editorLang: 'dockerfile', run: (i) => import('./format').then((m) => m.formatDockerfile(i)) },
+  { id: 'env-format', category: 'format', name: '.env 格式化', keywords: ['env', 'dotenv', '环境变量', 'config', '格式化'], layout: 'io', editorLang: 'properties', run: (i) => import('./format').then((m) => m.formatEnv(i)) },
 ]
 
 export function findTool(id: string): ToolDef | undefined {

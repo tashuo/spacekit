@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown, formatIni, formatProperties } from '@/lib/tools/format'
+import { formatSql, minifySql, formatCss, minifyCss, formatHtml, formatJs, formatXml, minifyXml, formatYaml, formatJson5, formatToml, formatMarkdown, formatIni, formatProperties, formatDockerfile, formatEnv } from '@/lib/tools/format'
 
 describe('formatSql', () => {
   it('uppercases keywords and indents', () => {
@@ -213,5 +213,34 @@ describe('formatProperties', () => {
   })
   it('errors on empty input', () => {
     expect(formatProperties('').ok).toBe(false)
+  })
+})
+
+describe('formatDockerfile', () => {
+  it('uppercases instructions and single-spaces args', () => {
+    expect(formatDockerfile('from  node:18\nworkdir /app').output).toBe('FROM node:18\nWORKDIR /app')
+  })
+  it('preserves comments and RUN continuations', () => {
+    expect(formatDockerfile('# c\nrun apt update \\\n && apt install -y curl').output).toBe(
+      '# c\nRUN apt update \\\n && apt install -y curl',
+    )
+  })
+  it('leaves arg internal spacing inside continuation untouched', () => {
+    expect(formatDockerfile('RUN echo  a \\\n  echo  b').output).toBe('RUN echo  a \\\n  echo  b')
+  })
+  it('errors on empty input', () => {
+    expect(formatDockerfile('   ').ok).toBe(false)
+  })
+})
+
+describe('formatEnv', () => {
+  it('strips spaces around = and keeps quotes', () => {
+    expect(formatEnv('A = 1\nB="x y"').output).toBe('A=1\nB="x y"')
+  })
+  it('preserves export prefix and comments', () => {
+    expect(formatEnv('# c\nexport  KEY = v').output).toBe('# c\nexport KEY=v')
+  })
+  it('errors on empty input', () => {
+    expect(formatEnv('').ok).toBe(false)
   })
 })

@@ -232,6 +232,77 @@ export function formatIni(input: string): ToolResult {
   return ok(trimTrailingBlank(out).join('\n'))
 }
 
+const DOCKER_INSTRUCTIONS = new Set([
+  'FROM', 'RUN', 'CMD', 'LABEL', 'MAINTAINER', 'EXPOSE', 'ENV', 'ADD', 'COPY',
+  'ENTRYPOINT', 'VOLUME', 'USER', 'WORKDIR', 'ARG', 'ONBUILD', 'STOPSIGNAL', 'HEALTHCHECK', 'SHELL',
+])
+
+// Dockerfile 格式化：指令关键字大写、与参数间单空格；注释/解析指令、续行(\)与参数原样保留。
+export function formatDockerfile(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const out: string[] = []
+  let prevBlank = false
+  let inContinuation = false
+  for (const raw of input.split(/\r?\n/)) {
+    const line = raw.replace(/\s+$/, '')
+    if (line.trim() === '') {
+      if (!inContinuation && !prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      continue
+    }
+    prevBlank = false
+    // 续行中的参数行：原样保留（不重解释为指令/注释）
+    if (inContinuation) {
+      out.push(line)
+      inContinuation = endsWithContinuation(line)
+      continue
+    }
+    if (line.trim().startsWith('#')) {
+      out.push(line.trim())
+      continue
+    }
+    const m = line.trim().match(/^(\S+)(\s+([\s\S]*))?$/)
+    if (m && DOCKER_INSTRUCTIONS.has(m[1].toUpperCase())) {
+      out.push(m[3] !== undefined ? `${m[1].toUpperCase()} ${m[3]}` : m[1].toUpperCase())
+    } else {
+      out.push(line.trim())
+    }
+    inContinuation = endsWithContinuation(line)
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}
+
+// .env 格式化：KEY=value 统一(去 = 周围空白)、保留 export 前缀/引号/注释与顺序。
+export function formatEnv(input: string): ToolResult {
+  if (!input.trim()) return err('输入为空')
+  const out: string[] = []
+  let prevBlank = false
+  for (const raw of input.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line === '') {
+      if (!prevBlank && out.length) {
+        out.push('')
+        prevBlank = true
+      }
+      continue
+    }
+    prevBlank = false
+    if (line.startsWith('#')) {
+      out.push(line)
+      continue
+    }
+    const m = line.match(/^(export\s+)?([^=\s]+)\s*=\s*(.*)$/)
+    if (m) {
+      out.push(`${m[1] ? 'export ' : ''}${m[2]}=${m[3].replace(/\s+$/, '')}`)
+    } else {
+      out.push(line) // 无 = 的行原样保留
+    }
+  }
+  return ok(trimTrailingBlank(out).join('\n'))
+}
+
 // Java .properties 格式化：键值分隔符(= : 或空白)统一为 =，注释(# !)与续行保留。
 export function formatProperties(input: string): ToolResult {
   if (!input.trim()) return err('输入为空')

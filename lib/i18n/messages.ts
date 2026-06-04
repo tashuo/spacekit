@@ -200,4 +200,6 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'tool.markdown-format': { zh: 'Markdown 格式化', en: 'Markdown Format' },
   'tool.ini-format': { zh: 'INI 格式化', en: 'INI Format' },
   'tool.properties-format': { zh: 'Properties 格式化', en: 'Properties Format' },
+  'tool.dockerfile-format': { zh: 'Dockerfile 格式化', en: 'Dockerfile Format' },
+  'tool.env-format': { zh: '.env 格式化', en: '.env Format' },
 }
