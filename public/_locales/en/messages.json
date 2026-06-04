@@ -1,0 +1,11 @@
+{
+  "extDescription": {
+    "message": "Local-first developer toolbox. Zero network, no data collection."
+  },
+  "cmdOpenApp": {
+    "message": "Open the SpaceKit tab"
+  },
+  "cmdToggleOverlay": {
+    "message": "Show the SpaceKit overlay for the selected text"
+  }
+}
