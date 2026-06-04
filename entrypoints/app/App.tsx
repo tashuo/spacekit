@@ -13,6 +13,7 @@ import { usePrefs, type Theme } from '@/lib/store/prefs'
 import { useHistory } from '@/lib/store/history'
 import { useT } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
+import { HANDOFF_KEY, type Handoff } from '@/lib/messaging'
 import {
   ArrowLeftIcon,
   BracesIcon,
@@ -27,7 +28,7 @@ import {
 } from '@/components/icons'
 import type { ToolDef } from '@/lib/tools/types'
 
-function ToolView({ tool }: { tool: ToolDef }) {
+function ToolView({ tool, initialInput }: { tool: ToolDef; initialInput?: string }) {
   switch (tool.layout) {
     case 'diff':
       return <DiffPanel tool={tool} />
@@ -42,7 +43,7 @@ function ToolView({ tool }: { tool: ToolDef }) {
     case 'password':
       return <PasswordPanel tool={tool} />
     default:
-      return <ToolPanel tool={tool} />
+      return <ToolPanel tool={tool} initialInput={initialInput} />
   }
 }
 
@@ -155,10 +156,22 @@ export function App() {
   const [activeToolId, setActiveToolId] = useState<string | null>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [handoff, setHandoff] = useState<Handoff | null>(null)
 
   useEffect(() => {
     void hydrate()
     void hydrateHistory()
+    // 来自浮层「在应用中打开」的交接：预选工具并填入文本，读后即清除
+    void (async () => {
+      const stored = await chrome.storage?.local.get(HANDOFF_KEY)
+      const h = stored?.[HANDOFF_KEY] as Handoff | undefined
+      if (h?.toolId && findTool(h.toolId)) {
+        setActiveToolId(h.toolId)
+        setHandoff(h)
+        pushRecent(h.toolId)
+        await chrome.storage?.local.remove(HANDOFF_KEY)
+      }
+    })()
   }, [])
   useEffect(() => {
     applyTheme(theme)
@@ -183,6 +196,7 @@ export function App() {
     pushRecent(id)
     setActiveToolId(id)
     setPaletteOpen(false)
+    setHandoff(null) // 用户主动切换工具后不再复用交接文本
   }
 
   const tool = activeToolId ? findTool(activeToolId) : null
@@ -215,7 +229,10 @@ export function App() {
       <header className="flex h-12 shrink-0 items-center gap-2 border-b border-zinc-200 bg-white/70 px-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/60">
         <button
           type="button"
-          onClick={() => setActiveToolId(null)}
+          onClick={() => {
+            setActiveToolId(null)
+            setHandoff(null)
+          }}
           aria-label={t('nav.back')}
           className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
         >
@@ -255,7 +272,7 @@ export function App() {
       </header>
 
       <main className="flex min-h-0 flex-1 flex-col">
-        <ToolView key={tool.id} tool={tool} />
+        <ToolView key={tool.id} tool={tool} initialInput={handoff && handoff.toolId === tool.id ? handoff.text : undefined} />
       </main>
 
       {paletteOpen && (

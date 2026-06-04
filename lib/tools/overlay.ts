@@ -24,3 +24,25 @@ export const OVERLAY_TOOLS: OverlayTool[] = [
 export function overlayTools(): OverlayTool[] {
   return OVERLAY_TOOLS
 }
+
+// 按选中内容猜测最合适的浮层工具，划词即出大概率想要的结果。
+// 顺序由特征强到弱；都不匹配则回落 json-format。
+export function guessOverlayTool(text: string): string {
+  const s = text.trim()
+  if (!s) return 'json-format'
+  // JWT：三段 base64url，以 eyJ 开头（header 几乎总是 {"alg|typ）
+  if (/^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*$/.test(s)) return 'jwt-decode'
+  // 时间戳：10 位（秒）或 13 位（毫秒）纯数字
+  if (/^\d{10}$|^\d{13}$/.test(s)) return 'ts-to-date'
+  // URL 编码：含 %XX 或 + 充当空格的成对编码
+  if (/%[0-9A-Fa-f]{2}/.test(s)) return 'url-decode'
+  // Unicode 转义：\uXXXX
+  if (/\\u[0-9a-fA-F]{4}/.test(s)) return 'unicode-decode'
+  // JSON：以 { 或 [ 开头
+  if (/^[[{]/.test(s)) return 'json-format'
+  // Base64：仅含 base64 字符、长度为 4 的倍数且足够长（避免把普通单词误判）
+  if (s.length >= 8 && s.length % 4 === 0 && /^[A-Za-z0-9+/]+={0,2}$/.test(s) && /[A-Z+/=]|[0-9]/.test(s)) {
+    return 'base64-decode'
+  }
+  return 'json-format'
+}

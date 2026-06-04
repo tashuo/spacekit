@@ -1,7 +1,7 @@
 import { overlayTools } from '@/lib/tools/overlay'
 import { t, resolveLang } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
-import type { BgMessage } from '@/lib/messaging'
+import { type BgMessage, type Handoff, HANDOFF_KEY } from '@/lib/messaging'
 
 const PARENT_ID = 'spacekit'
 const PREFS_KEY = 'spacekit:prefs'
@@ -67,6 +67,15 @@ export default defineBackground(() => {
   // 浮层请求打开标签页。onMessage 是全局的，会收到任意来源的消息，
   // 故入参按 unknown 处理，再真实收窄到 BgMessage。
   chrome.runtime.onMessage.addListener((msg: unknown) => {
-    if ((msg as BgMessage | undefined)?.type === 'open-app') chrome.tabs.create({ url: appUrl() })
+    const m = msg as BgMessage | undefined
+    if (m?.type !== 'open-app') return
+    // 带上选区文本/工具时，先经 storage 交接（避免 URL 长度限制），app 启动时读取并清除。
+    if (m.toolId) {
+      void chrome.storage.local
+        .set({ [HANDOFF_KEY]: { toolId: m.toolId, text: m.text ?? '' } satisfies Handoff })
+        .then(() => chrome.tabs.create({ url: appUrl() }))
+    } else {
+      chrome.tabs.create({ url: appUrl() })
+    }
   })
 })

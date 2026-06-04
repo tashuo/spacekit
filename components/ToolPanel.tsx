@@ -14,18 +14,14 @@ function PaneHeader({ label, children }: { label: string; children?: React.React
   )
 }
 
-export function ToolPanel({ tool }: { tool: ToolDef }) {
+export function ToolPanel({ tool, initialInput }: { tool: ToolDef; initialInput?: string }) {
   const t = useT()
   const addHistory = useHistory((s) => s.add)
-  const [input, setInput] = useState('')
+  // 初始输入可来自浮层「在应用中打开」的交接。切换工具时由 App 的 key={tool.id} 整体重挂载来重置，
+  // 故此处无需再用 effect 清空（那会清掉交接进来的初始值）。
+  const [input, setInput] = useState(initialInput ?? '')
   const [copied, setCopied] = useState(false)
   const [result, setResult] = useState<ToolResult>({ ok: true, output: '' })
-
-  // 切换工具时清空输入
-  useEffect(() => {
-    setInput('')
-    setCopied(false)
-  }, [tool.id])
 
   // 实时转换：输入变化即出结果。run 可能是异步（动态加载的格式化工具），用 alive 防竞态。
   useEffect(() => {

@@ -23,6 +23,9 @@ function Svg({ className, children }: IconProps & { children: React.ReactNode })
 export const SearchIcon = (p: IconProps) => (
   <Svg {...p}><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></Svg>
 )
+export const XIcon = (p: IconProps) => (
+  <Svg {...p}><path d="M18 6 6 18M6 6l12 12" /></Svg>
+)
 export const SunIcon = (p: IconProps) => (
   <Svg {...p}><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4" /></Svg>
 )
