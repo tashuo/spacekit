@@ -50,25 +50,23 @@ export function CommandPalette({
     const recents = recentToolIds
       .map((id) => findTool(id))
       .filter((t): t is ToolDef => !!t && !favSet.has(t.id))
-    const used = new Set([...favSet, ...recents.map((t) => t.id)])
-    const all = TOOLS.filter((t) => !used.has(t.id))
     const out: Group[] = []
     if (favs.length) out.push({ key: 'fav', label: '收藏', Icon: StarFilledIcon, tools: favs })
     if (recents.length) out.push({ key: 'recent', label: '最近', Icon: ClockIcon, tools: recents })
-    // 「全部」按分类聚合（分类顺序取自 CAT_LABEL 的定义顺序）
+    // 各分类展示全量工具（与收藏/最近快捷区可重复出现）
     for (const cat of Object.keys(CAT_LABEL) as ToolCategory[]) {
-      const tools = all.filter((t) => t.category === cat)
+      const tools = TOOLS.filter((t) => t.category === cat)
       if (tools.length) out.push({ key: cat, label: CAT_LABEL[cat], dot: CAT_DOT[cat], tools })
     }
     return out
   }, [query, favoriteToolIds, recentToolIds])
 
-  const flat = useMemo(() => groups.flatMap((g) => g.tools), [groups])
-  const indexById = useMemo(() => {
-    const m = new Map<string, number>()
-    flat.forEach((t, i) => m.set(t.id, i))
-    return m
-  }, [flat])
+  // 给每个可见项分配全局位置索引（同一工具可在多个分组重复出现）
+  const positioned = useMemo(() => {
+    let i = 0
+    return groups.map((g) => ({ ...g, items: g.tools.map((tool) => ({ tool, index: i++ })) }))
+  }, [groups])
+  const flatItems = useMemo(() => positioned.flatMap((g) => g.items), [positioned])
 
   useEffect(() => setActive(0), [query])
   useEffect(() => {
@@ -81,20 +79,20 @@ export function CommandPalette({
   function onKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'ArrowDown') {
       e.preventDefault()
-      setActive((i) => Math.min(i + 1, flat.length - 1))
+      setActive((i) => Math.min(i + 1, flatItems.length - 1))
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
       setActive((i) => Math.max(i - 1, 0))
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      const t = flat[active]
+      const t = flatItems[active]?.tool
       if (t) onSelect(t.id)
     } else if (e.key === 'Escape') {
       e.preventDefault()
       onClose?.()
     } else if ((e.metaKey || e.ctrlKey) && (e.key === 'd' || e.key === 'D')) {
       e.preventDefault()
-      const t = flat[active]
+      const t = flatItems[active]?.tool
       if (t) toggleFavorite(t.id)
     }
   }
@@ -128,10 +126,10 @@ export function CommandPalette({
       </div>
 
       <div ref={listRef} id="ck-list" role="listbox" className="flex-1 overflow-auto p-2">
-        {flat.length === 0 ? (
+        {flatItems.length === 0 ? (
           <div className="px-3 py-10 text-center text-sm text-zinc-400">未找到匹配工具</div>
         ) : (
-          groups.map((g) => (
+          positioned.map((g) => (
             <div key={g.key} className="mb-1">
               <div className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                 {g.Icon ? (
@@ -141,18 +139,17 @@ export function CommandPalette({
                 ) : null}
                 {g.label}
               </div>
-              {g.tools.map((t) => {
-                const idx = indexById.get(t.id) ?? -1
-                const isActive = idx === active
+              {g.items.map(({ tool: t, index }) => {
+                const isActive = index === active
                 const fav = favoriteToolIds.includes(t.id)
                 return (
                   <div
-                    key={t.id}
+                    key={`${g.key}-${t.id}`}
                     role="option"
                     aria-selected={isActive}
                     data-active={isActive}
                     onClick={() => onSelect(t.id)}
-                    onMouseMove={() => setActive(idx)}
+                    onMouseMove={() => setActive(index)}
                     className={`group flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors ${
                       isActive ? 'bg-teal-50 dark:bg-teal-500/10' : ''
                     }`}
