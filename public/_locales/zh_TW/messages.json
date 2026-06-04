@@ -1,0 +1,11 @@
+{
+  "extDescription": {
+    "message": "本地優先的開發者工具箱。零網路、不收集資料。"
+  },
+  "cmdOpenApp": {
+    "message": "開啟 SpaceKit 分頁"
+  },
+  "cmdToggleOverlay": {
+    "message": "對選取的文字喚出 SpaceKit 浮層"
+  }
+}
