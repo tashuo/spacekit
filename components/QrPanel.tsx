@@ -3,6 +3,7 @@ import jsQR from 'jsqr'
 import { generateQrSvg } from '@/lib/tools/qr'
 import { CopyIcon } from '@/components/icons'
 import { useT } from '@/lib/i18n'
+import { useHistory } from '@/lib/store/history'
 import type { ToolDef } from '@/lib/tools/types'
 
 function Generate() {
@@ -84,6 +85,7 @@ function Generate() {
 
 function Decode() {
   const t = useT()
+  const addHistory = useHistory((s) => s.add)
   const [result, setResult] = useState('')
   const [status, setStatus] = useState<string>('')
   const [copied, setCopied] = useState(false)
@@ -129,6 +131,7 @@ function Decode() {
   function copy() {
     if (!result) return
     void navigator.clipboard.writeText(result)
+    addHistory({ kind: 'tool', toolId: 'qr-decode', value: result })
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }
