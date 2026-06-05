@@ -13,7 +13,10 @@ export default defineConfig({
     version: '0.1.0',
     permissions: ['storage', 'contextMenus'],
     host_permissions: ['<all_urls>'],
-    action: { default_title: 'SpaceKit' },
+    action: {
+      default_title: 'SpaceKit',
+      default_icon: { 16: 'icon/16.png', 32: 'icon/32.png', 48: 'icon/48.png', 128: 'icon/128.png' },
+    },
     commands: {
       'open-app': {
         suggested_key: { default: 'Alt+Shift+S' },
