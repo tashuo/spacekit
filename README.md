@@ -1,5 +1,7 @@
 # SpaceKit
 
+**English** | [中文](./README.zh-CN.md)
+
 [![CI](https://github.com/tashuo/spacekit/actions/workflows/ci.yml/badge.svg)](https://github.com/tashuo/spacekit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Built with WXT](https://img.shields.io/badge/built%20with-WXT-67d4c1.svg)](https://wxt.dev/)
