@@ -88,11 +88,13 @@ pnpm build:web      # production build → .output/web
 pnpm preview:web    # preview the production build locally
 ```
 
-Deploy to **Cloudflare Pages**:
+Deploy to **Cloudflare Workers** (static assets — no Worker script, no backend). A `wrangler.jsonc` is included that serves `.output/web` as the site root.
 
-- **Build command:** `pnpm build:web`
-- **Build output directory:** `.output/web`
-- No environment variables, no Worker, no backend.
+```bash
+pnpm deploy:web     # build + wrangler deploy (needs `wrangler login` once)
+```
+
+Or connect the repo in the Cloudflare dashboard (Workers → Builds) with build command `pnpm build:web`; the included `wrangler.jsonc` provides the rest. No environment variables required.
 
 The web version persists history/preferences in IndexedDB (the extension uses `chrome.storage`), selected automatically at runtime. Because a web page can't inject into other sites, the web version does **not** include the page selection overlay, the right-click context menu, or the global shortcuts — those remain extension-only.
 
