@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { LangPref } from '@/lib/i18n/messages'
+import { kv } from './kv'
 
 export type Theme = 'system' | 'light' | 'dark'
 
@@ -24,14 +25,12 @@ const KEY = 'spacekit:prefs'
 type Persisted = Pick<PrefsState, 'theme' | 'lang' | 'tz' | 'recentToolIds' | 'favoriteToolIds'>
 
 async function persist(p: Persisted) {
-  await chrome.storage?.local.set({
-    [KEY]: {
-      theme: p.theme,
-      lang: p.lang,
-      tz: p.tz,
-      recentToolIds: p.recentToolIds,
-      favoriteToolIds: p.favoriteToolIds,
-    },
+  await kv.set(KEY, {
+    theme: p.theme,
+    lang: p.lang,
+    tz: p.tz,
+    recentToolIds: p.recentToolIds,
+    favoriteToolIds: p.favoriteToolIds,
   })
 }
 
@@ -68,8 +67,7 @@ export const usePrefs = create<PrefsState>((set, get) => ({
     void persist({ ...get(), favoriteToolIds })
   },
   hydrate: async () => {
-    const stored = await chrome.storage?.local.get(KEY)
-    const p = stored?.[KEY] as Partial<Persisted> | undefined
+    const p = await kv.get<Partial<Persisted>>(KEY)
     if (p) {
       set({
         theme: p.theme ?? 'dark',
