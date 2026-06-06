@@ -88,11 +88,13 @@ pnpm build:web      # 生产构建 → .output/web
 pnpm preview:web    # 本地预览生产构建
 ```
 
-部署到 **Cloudflare Pages**:
+部署到 **Cloudflare Workers**(静态资源 Static Assets —— 无 Worker 脚本、无后端)。仓库已含 `wrangler.jsonc`,把 `.output/web` 作为站点根目录。
 
-- **构建命令:** `pnpm build:web`
-- **输出目录:** `.output/web`
-- 无环境变量、无 Worker、无后端。
+```bash
+pnpm deploy:web     # 构建 + wrangler deploy(首次需 `wrangler login`)
+```
+
+或在 Cloudflare 后台连接本仓库(Workers → Builds),构建命令填 `pnpm build:web`,其余由 `wrangler.jsonc` 提供。无需任何环境变量。
 
 Web 版用 IndexedDB 持久化历史/偏好(扩展用 `chrome.storage`),运行时自动选择。由于网页无法注入到其它站点,Web 版**不含**网页选词浮层、右键菜单和全局快捷键 —— 这些仍是扩展独有能力。
 

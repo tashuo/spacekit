@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers 静态资源托管（Static Assets）。纯前端、无 Worker 脚本、无后端。
+  // 产物由 `pnpm build:web` 生成到 .output/web，这里把整个目录作为站点根。
+  "name": "spacekit",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./.output/web",
+    // 单页应用：未命中静态资源时回退到 index.html（虽无客户端路由，深链也安全）
+    "not_found_handling": "single-page-application"
+  }
+}
