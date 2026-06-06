@@ -78,6 +78,24 @@ pnpm test           # 运行单元测试(vitest)
 - `Alt+Shift+K` —— 切换选词浮层
 - `⌘/Ctrl+K` —— 打开命令面板(在应用内)
 
+## Web 版(PWA)
+
+同一套命令面板与全部 57 个工具也提供一个独立、可离线的 Web 版,与扩展**共用核心代码**。它是纯静态资源,可**零成本**托管(如 Cloudflare Pages)—— 没有后端,所有计算都在浏览器本地完成。
+
+```bash
+pnpm dev:web        # Web 开发服务器(Vite,热更新)
+pnpm build:web      # 生产构建 → .output/web
+pnpm preview:web    # 本地预览生产构建
+```
+
+部署到 **Cloudflare Pages**:
+
+- **构建命令:** `pnpm build:web`
+- **输出目录:** `.output/web`
+- 无环境变量、无 Worker、无后端。
+
+Web 版用 IndexedDB 持久化历史/偏好(扩展用 `chrome.storage`),运行时自动选择。由于网页无法注入到其它站点,Web 版**不含**网页选词浮层、右键菜单和全局快捷键 —— 这些仍是扩展独有能力。
+
 ## 许可证
 
 [MIT](./LICENSE)

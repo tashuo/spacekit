@@ -78,6 +78,24 @@ pnpm test           # run unit tests (vitest)
 - `Alt+Shift+K` — toggle the selection overlay
 - `⌘/Ctrl+K` — open the command palette (inside the app)
 
+## Web version (PWA)
+
+The same command palette and all 57 tools also ship as a standalone, offline-capable web app that shares the extension's core code. It can be hosted as static files at **zero cost** (e.g. Cloudflare Pages) — there's no backend, since everything runs locally in the browser.
+
+```bash
+pnpm dev:web        # web dev server (Vite, HMR)
+pnpm build:web      # production build → .output/web
+pnpm preview:web    # preview the production build locally
+```
+
+Deploy to **Cloudflare Pages**:
+
+- **Build command:** `pnpm build:web`
+- **Build output directory:** `.output/web`
+- No environment variables, no Worker, no backend.
+
+The web version persists history/preferences in IndexedDB (the extension uses `chrome.storage`), selected automatically at runtime. Because a web page can't inject into other sites, the web version does **not** include the page selection overlay, the right-click context menu, or the global shortcuts — those remain extension-only.
+
 ## License
 
 [MIT](./LICENSE)
