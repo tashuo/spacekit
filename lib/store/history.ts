@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { kv } from './kv'
 
 // 历史条目：纯本地存储，绝不外发。可一键清空。
 export interface HistoryEntry {
@@ -25,7 +26,7 @@ interface HistoryState {
 }
 
 async function persist(s: { enabled: boolean; entries: HistoryEntry[] }) {
-  await chrome.storage?.local.set({ [KEY]: { enabled: s.enabled, entries: s.entries } })
+  await kv.set(KEY, { enabled: s.enabled, entries: s.entries })
 }
 
 export const useHistory = create<HistoryState>((set, get) => ({
@@ -57,8 +58,7 @@ export const useHistory = create<HistoryState>((set, get) => ({
     void persist({ ...get(), enabled })
   },
   hydrate: async () => {
-    const stored = await chrome.storage?.local.get(KEY)
-    const h = stored?.[KEY] as { enabled?: boolean; entries?: HistoryEntry[] } | undefined
+    const h = await kv.get<{ enabled?: boolean; entries?: HistoryEntry[] }>(KEY)
     if (h) set({ enabled: h.enabled ?? true, entries: h.entries ?? [] })
   },
 }))

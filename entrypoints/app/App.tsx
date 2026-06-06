@@ -11,6 +11,7 @@ import { HistoryPanel } from '@/components/HistoryPanel'
 import { findTool } from '@/lib/tools/registry'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
 import { useHistory } from '@/lib/store/history'
+import { kv } from '@/lib/store/kv'
 import { useT } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
 import { HANDOFF_KEY, type Handoff } from '@/lib/messaging'
@@ -163,13 +164,12 @@ export function App() {
     void hydrateHistory()
     // 来自浮层「在应用中打开」的交接：预选工具并填入文本，读后即清除
     void (async () => {
-      const stored = await chrome.storage?.local.get(HANDOFF_KEY)
-      const h = stored?.[HANDOFF_KEY] as Handoff | undefined
+      const h = await kv.get<Handoff>(HANDOFF_KEY)
       if (h?.toolId && findTool(h.toolId)) {
         setActiveToolId(h.toolId)
         setHandoff(h)
         pushRecent(h.toolId)
-        await chrome.storage?.local.remove(HANDOFF_KEY)
+        await kv.remove(HANDOFF_KEY)
       }
     })()
   }, [])

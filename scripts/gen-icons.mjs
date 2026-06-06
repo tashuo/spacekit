@@ -7,7 +7,7 @@ import { mkdir } from 'node:fs/promises'
 
 const SRC = 'assets/icon-source.png'
 const OUT_DIR = 'public/icon'
-const SIZES = [16, 32, 48, 128]
+const SIZES = [16, 32, 48, 128, 192, 512]
 
 await mkdir(OUT_DIR, { recursive: true })
 
