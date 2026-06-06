@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* 显式声明内容来源：Web 构建（vite.web.config.ts 的 root 指向 web/）下，Tailwind 的
+   自动扫描只覆盖 web/，会漏掉这些目录里用到的 class。扩展构建本就扫到，这里是无害的超集。
+   路径相对于本 CSS 文件（assets/）。 */
+@source "../components";
+@source "../entrypoints";
+@source "../lib";
+
 /* 类切换深色模式（App 在 <html> 上加/去 .dark），而非仅跟随系统媒体查询 */
 @custom-variant dark (&:where(.dark, .dark *));
 
