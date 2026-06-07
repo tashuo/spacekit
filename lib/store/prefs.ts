@@ -17,6 +17,7 @@ interface PrefsState {
   setTz: (tz: string) => void
   pushRecent: (id: string) => void
   toggleFavorite: (id: string) => void
+  importMerge: (p: Partial<Persisted>) => void
   hydrate: () => Promise<void>
 }
 
@@ -65,6 +66,20 @@ export const usePrefs = create<PrefsState>((set, get) => ({
     const favoriteToolIds = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]
     set({ favoriteToolIds })
     void persist({ ...get(), favoriteToolIds })
+  },
+  importMerge: (p) => {
+    const cur = get()
+    const favoriteToolIds = [...new Set([...cur.favoriteToolIds, ...(p.favoriteToolIds ?? [])])]
+    const recentToolIds = [...new Set([...(p.recentToolIds ?? []), ...cur.recentToolIds])].slice(0, RECENT_MAX)
+    const next = {
+      theme: p.theme ?? cur.theme,
+      lang: p.lang ?? cur.lang,
+      tz: p.tz ?? cur.tz,
+      favoriteToolIds,
+      recentToolIds,
+    }
+    set(next)
+    void persist(get())
   },
   hydrate: async () => {
     const p = await kv.get<Partial<Persisted>>(KEY)
