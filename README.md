@@ -98,6 +98,15 @@ Or connect the repo in the Cloudflare dashboard (Workers → Builds) with build 
 
 The web version persists history/preferences in IndexedDB (the extension uses `chrome.storage`), selected automatically at runtime. Because a web page can't inject into other sites, the web version does **not** include the page selection overlay, the right-click context menu, or the global shortcuts — those remain extension-only.
 
+## Web ↔ extension interop
+
+The web app and the extension are independent (separate origins, separate local storage), but two bridges connect them — both fully local, no backend, no extra permissions:
+
+- **Export / Import** — both the web app and the extension expose **Export** and **Import** in the history panel. Export downloads a `spacekit-backup-*.json` of your history, favorites, and preferences; Import merges it back in (history deduped by id, favorites unioned). Use it to move or back up your data between the two.
+- **Open in web** — when you select text on a page, the extension's selection overlay offers **Open in web**, which opens the hosted web app with that tool preselected and the text prefilled. The payload travels in the URL **hash fragment**, so the selected text is never sent to the server.
+
+The web app URL used for the handoff is the single constant `WEB_APP_URL` in `lib/config.ts` — change it when you settle on a domain.
+
 ## License
 
 [MIT](./LICENSE)
