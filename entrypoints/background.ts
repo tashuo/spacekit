@@ -2,6 +2,8 @@ import { overlayTools } from '@/lib/tools/overlay'
 import { t, resolveLang } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
 import { type BgMessage, type Handoff, HANDOFF_KEY } from '@/lib/messaging'
+import { WEB_APP_URL } from '@/lib/config'
+import { encodeHandoff } from '@/lib/handoff'
 
 const PARENT_ID = 'spacekit'
 const PREFS_KEY = 'spacekit:prefs'
@@ -68,6 +70,10 @@ export default defineBackground(() => {
   // 故入参按 unknown 处理，再真实收窄到 BgMessage。
   chrome.runtime.onMessage.addListener((msg: unknown) => {
     const m = msg as BgMessage | undefined
+    if (m?.type === 'open-web') {
+      chrome.tabs.create({ url: `${WEB_APP_URL}#${encodeHandoff(m.toolId, m.text)}` })
+      return
+    }
     if (m?.type !== 'open-app') return
     // 带上选区文本/工具时，先经 storage 交接（避免 URL 长度限制），app 启动时读取并清除。
     if (m.toolId) {

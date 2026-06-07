@@ -116,6 +116,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   // 浮层 / 右键菜单
   'overlay.close': { zh: '关闭', en: 'Close' },
   'overlay.openApp': { zh: '在标签页打开 →', en: 'Open in tab →' },
+  'overlay.openWeb': { zh: '在网页版打开', en: 'Open in web' },
   'overlay.noOutput': { zh: '（无输出）', en: '(no output)' },
   'overlay.fail': { zh: '处理失败', en: 'Failed' },
   'ctx.parent': { zh: '用 SpaceKit 处理', en: 'Process with SpaceKit' },
@@ -146,6 +147,9 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   'history.open': { zh: '历史记录', en: 'History' },
   'history.title': { zh: '历史记录', en: 'History' },
   'history.empty': { zh: '暂无历史', en: 'No history yet' },
+  'history.export': { zh: '导出', en: 'Export' },
+  'history.import': { zh: '导入', en: 'Import' },
+  'history.importError': { zh: '导入失败：文件格式无效', en: 'Import failed: invalid file' },
   'history.clear': { zh: '清空', en: 'Clear' },
   'history.clearTool': { zh: '清除该工具的记录', en: 'Clear this tool' },
   'history.record': { zh: '记录历史', en: 'Record history' },

@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useHistory, type HistoryEntry } from '@/lib/store/history'
 import { useT } from '@/lib/i18n'
 import { CopyIcon, TrashIcon } from '@/components/icons'
+import { buildExport, applyImport } from '@/lib/store/portable'
 
 export function HistoryPanel({ onClose }: { onClose: () => void }) {
   const t = useT()
@@ -12,6 +13,32 @@ export function HistoryPanel({ onClose }: { onClose: () => void }) {
   const removeByTool = useHistory((s) => s.removeByTool)
   const clear = useHistory((s) => s.clear)
   const [groupBy, setGroupBy] = useState<'tool' | 'time'>('tool')
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [importErr, setImportErr] = useState(false)
+
+  function exportData() {
+    const blob = new Blob([JSON.stringify(buildExport(), null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    const d = new Date()
+    const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`
+    a.href = url
+    a.download = `spacekit-backup-${stamp}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  async function onImportFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      applyImport(JSON.parse(await file.text()))
+      setImportErr(false)
+    } catch {
+      setImportErr(true)
+    }
+  }
 
   // 按工具分组：entries 已按时间倒序 → 组顺序为「最近活动优先」，组内为时间倒序
   const groups = useMemo(() => {
@@ -87,6 +114,22 @@ export function HistoryPanel({ onClose }: { onClose: () => void }) {
           </label>
           <button
             type="button"
+            onClick={exportData}
+            disabled={!entries.length}
+            className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-zinc-500 transition-colors hover:text-teal-600 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:text-teal-400"
+          >
+            {t('history.export')}
+          </button>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-zinc-500 transition-colors hover:text-teal-600 dark:hover:text-teal-400"
+          >
+            {t('history.import')}
+          </button>
+          <input ref={fileRef} type="file" accept="application/json,.json" onChange={onImportFile} className="hidden" />
+          <button
+            type="button"
             onClick={clear}
             disabled={!entries.length}
             className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-zinc-500 transition-colors hover:text-rose-500 disabled:cursor-not-allowed disabled:opacity-40"
@@ -94,6 +137,12 @@ export function HistoryPanel({ onClose }: { onClose: () => void }) {
             {t('history.clear')}
           </button>
         </div>
+
+        {importErr && (
+          <div className="border-b border-rose-200 bg-rose-50 px-4 py-1.5 text-xs text-rose-600 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-400">
+            {t('history.importError')}
+          </div>
+        )}
 
         <div className="flex-1 overflow-auto p-2">
           {entries.length === 0 ? (

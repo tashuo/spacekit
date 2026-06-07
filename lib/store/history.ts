@@ -22,6 +22,7 @@ interface HistoryState {
   removeByTool: (toolId: string) => void
   clear: () => void
   setEnabled: (b: boolean) => void
+  importMerge: (h: { enabled: boolean; entries: HistoryEntry[] }) => void
   hydrate: () => Promise<void>
 }
 
@@ -56,6 +57,16 @@ export const useHistory = create<HistoryState>((set, get) => ({
   setEnabled: (enabled) => {
     set({ enabled })
     void persist({ ...get(), enabled })
+  },
+  importMerge: (h) => {
+    const cur = get().entries
+    const seen = new Set(cur.map((e) => e.id))
+    const entries = [...cur, ...h.entries.filter((e) => !seen.has(e.id))]
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, MAX)
+    const next = { enabled: h.enabled, entries }
+    set(next)
+    void persist(next)
   },
   hydrate: async () => {
     const h = await kv.get<{ enabled?: boolean; entries?: HistoryEntry[] }>(KEY)
