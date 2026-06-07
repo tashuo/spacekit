@@ -8,6 +8,7 @@ import { CryptoPanel } from '@/components/CryptoPanel'
 import { QrPanel } from '@/components/QrPanel'
 import { PasswordPanel } from '@/components/PasswordPanel'
 import { HistoryPanel } from '@/components/HistoryPanel'
+import { InstallExtensionPill } from '@/components/InstallExtensionPill'
 import { findTool } from '@/lib/tools/registry'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
 import { useHistory } from '@/lib/store/history'
@@ -217,6 +218,7 @@ export function App() {
         <div className="flex items-center gap-3 px-5 py-4">
           <Brand />
           <div className="flex-1" />
+          <InstallExtensionPill />
           <HistoryButton onClick={() => setHistoryOpen(true)} />
           <LangToggle />
           <ThemeToggle theme={theme} onChange={setTheme} />
@@ -275,6 +277,7 @@ export function App() {
           K
           <span className="text-zinc-400">{t('nav.search')}</span>
         </button>
+        <InstallExtensionPill />
         <HistoryButton onClick={() => setHistoryOpen(true)} />
         <LangToggle />
         <ThemeToggle theme={theme} onChange={setTheme} />
