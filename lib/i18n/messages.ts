@@ -116,6 +116,7 @@ export const MESSAGES: Record<string, Record<Lang, string>> = {
   // 浮层 / 右键菜单
   'overlay.close': { zh: '关闭', en: 'Close' },
   'overlay.openApp': { zh: '在标签页打开 →', en: 'Open in tab →' },
+  'overlay.openWeb': { zh: '在网页版打开', en: 'Open in web' },
   'overlay.noOutput': { zh: '（无输出）', en: '(no output)' },
   'overlay.fail': { zh: '处理失败', en: 'Failed' },
   'ctx.parent': { zh: '用 SpaceKit 处理', en: 'Process with SpaceKit' },

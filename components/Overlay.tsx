@@ -145,6 +145,11 @@ export function Overlay() {
     setMode('hidden')
   }
 
+  function openInWeb() {
+    chrome.runtime.sendMessage({ type: 'open-web', toolId, text })
+    setMode('hidden')
+  }
+
   if (mode === 'hidden' || TOOLS.length === 0) return null
 
   return (
@@ -204,6 +209,13 @@ export function Overlay() {
               {copied ? t('action.copied') : t('action.copy')}
             </button>
             <div className="flex-1" />
+            <button
+              type="button"
+              onClick={openInWeb}
+              className="cursor-pointer rounded px-2 py-1 text-[11px] font-medium text-zinc-500 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+            >
+              {t('overlay.openWeb')}
+            </button>
             <button
               type="button"
               onClick={openInApp}

@@ -12,6 +12,7 @@ import { findTool } from '@/lib/tools/registry'
 import { usePrefs, type Theme } from '@/lib/store/prefs'
 import { useHistory } from '@/lib/store/history'
 import { kv } from '@/lib/store/kv'
+import { decodeHandoff } from '@/lib/handoff'
 import { useT } from '@/lib/i18n'
 import type { LangPref } from '@/lib/i18n'
 import { HANDOFF_KEY, type Handoff } from '@/lib/messaging'
@@ -162,8 +163,16 @@ export function App() {
   useEffect(() => {
     void hydrate()
     void hydrateHistory()
-    // 来自浮层「在应用中打开」的交接：预选工具并填入文本，读后即清除
+    // 交接来源：① 网页深链 #t=..&x=..（优先）② 扩展内置页经 kv
     void (async () => {
+      const fromHash = decodeHandoff(location.hash)
+      if (fromHash && findTool(fromHash.toolId)) {
+        setActiveToolId(fromHash.toolId)
+        setHandoff(fromHash)
+        pushRecent(fromHash.toolId)
+        history.replaceState(null, '', location.pathname + location.search)
+        return
+      }
       const h = await kv.get<Handoff>(HANDOFF_KEY)
       if (h?.toolId && findTool(h.toolId)) {
         setActiveToolId(h.toolId)
