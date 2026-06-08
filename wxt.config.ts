@@ -10,7 +10,7 @@ export default defineConfig({
     name: 'SpaceKit',
     default_locale: 'en',
     description: '__MSG_extDescription__',
-    version: '0.1.0',
+    version: '0.2.0',
     permissions: ['storage', 'contextMenus'],
     host_permissions: ['<all_urls>'],
     action: {
