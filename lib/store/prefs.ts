@@ -36,8 +36,8 @@ async function persist(p: Persisted) {
 }
 
 export const usePrefs = create<PrefsState>((set, get) => ({
-  // Dark-first：默认深色（用户仍可切到浅色/跟随系统）
-  theme: 'dark',
+  // 默认跟随系统明暗（用户仍可手动切到浅色/深色）
+  theme: 'system',
   // 默认跟随系统语言
   lang: 'system',
   tz: 'UTC',
@@ -85,7 +85,7 @@ export const usePrefs = create<PrefsState>((set, get) => ({
     const p = await kv.get<Partial<Persisted>>(KEY)
     if (p) {
       set({
-        theme: p.theme ?? 'dark',
+        theme: p.theme ?? 'system',
         lang: p.lang ?? 'system',
         tz: p.tz ?? 'UTC',
         recentToolIds: p.recentToolIds ?? [],
