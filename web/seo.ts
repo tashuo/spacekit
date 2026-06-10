@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import { MESSAGES } from '../lib/i18n/messages'
-import { WEB_APP_URL } from '../lib/config'
+import { WEB_APP_URL, GOOGLE_SITE_VERIFICATION } from '../lib/config'
 
 const TITLE = 'SpaceKit — Local-first developer toolbox (JSON, Base64, JWT, timestamp, hash)'
 const DESCRIPTION =
@@ -33,9 +33,17 @@ function jsonLd(url: string, toolNames: string[]): string {
   return `<script type="application/ld+json">${JSON.stringify(data)}</script>`
 }
 
-export function buildHeadTags({ url, toolNames }: { url: string; toolNames: string[] }): string {
+export function buildHeadTags({
+  url,
+  toolNames,
+  verification,
+}: {
+  url: string
+  toolNames: string[]
+  verification?: string
+}): string {
   const img = `${url}/og.png`
-  return [
+  const tags = [
     `<title>${TITLE}</title>`,
     `<meta name="description" content="${DESCRIPTION}" />`,
     `<link rel="canonical" href="${url}/" />`,
@@ -53,7 +61,11 @@ export function buildHeadTags({ url, toolNames }: { url: string; toolNames: stri
     `<meta name="twitter:description" content="${DESCRIPTION}" />`,
     `<meta name="twitter:image" content="${img}" />`,
     jsonLd(url, toolNames),
-  ].join('\n    ')
+  ]
+  if (verification) {
+    tags.push(`<meta name="google-site-verification" content="${verification}" />`)
+  }
+  return tags.join('\n    ')
 }
 
 export function buildContentBlock(toolNames: string[]): string {
@@ -120,7 +132,10 @@ export function seoPlugin(): Plugin {
     transformIndexHtml(html) {
       return html
         .replace(/<title>[\s\S]*?<\/title>\s*/, '')
-        .replace('</head>', `    ${buildHeadTags({ url, toolNames })}\n  </head>`)
+        .replace(
+          '</head>',
+          `    ${buildHeadTags({ url, toolNames, verification: GOOGLE_SITE_VERIFICATION })}\n  </head>`,
+        )
         .replace('<div id="root"></div>', `<div id="root">${buildContentBlock(toolNames)}</div>`)
     },
     generateBundle() {
