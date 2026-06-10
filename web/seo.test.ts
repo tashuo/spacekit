@@ -39,6 +39,12 @@ describe('buildHeadTags', () => {
     expect(head).toContain('"@type":"WebApplication"')
     expect(head).toContain('JSON Format')
   })
+  it('injects google-site-verification only when a token is given', () => {
+    expect(buildHeadTags({ url: URL, toolNames: NAMES, verification: 'tok123' })).toContain(
+      '<meta name="google-site-verification" content="tok123" />',
+    )
+    expect(buildHeadTags({ url: URL, toolNames: NAMES })).not.toContain('google-site-verification')
+  })
 })
 
 describe('buildContentBlock', () => {
