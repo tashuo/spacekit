@@ -4,6 +4,7 @@ import { rmSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { seoPlugin } from './web/seo'
 
 export default defineConfig({
   root: 'web',
@@ -12,6 +13,7 @@ export default defineConfig({
   resolve: { alias: { '@': resolve(__dirname, '.') } },
   plugins: [
     react(),
+    seoPlugin(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
