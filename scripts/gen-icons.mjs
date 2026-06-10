@@ -42,3 +42,19 @@ for (const size of SIZES) {
 
   console.log(`✓ ${OUT_DIR}/${size}.png`)
 }
+
+// OG 分享图：1200×630 深色底 + 居中 logo（无文字，规避字体依赖）
+const OG_W = 1200
+const OG_H = 630
+const OG_LOGO = 360
+const ogLogo = await sharp(trimmed)
+  .resize(OG_LOGO, OG_LOGO, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toBuffer()
+await sharp({
+  create: { width: OG_W, height: OG_H, channels: 4, background: { r: 10, g: 10, b: 10, alpha: 1 } },
+})
+  .composite([{ input: ogLogo, top: Math.round((OG_H - OG_LOGO) / 2), left: Math.round((OG_W - OG_LOGO) / 2) }])
+  .png()
+  .toFile('public/og.png')
+console.log('✓ public/og.png')
