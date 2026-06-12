@@ -7,5 +7,20 @@
     "directory": "./.output/web",
     // 单页应用：未命中静态资源时回退到 index.html（虽无客户端路由，深链也安全）
     "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
   }
 }
